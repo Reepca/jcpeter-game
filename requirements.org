@@ -1,0 +1,10 @@
+* Drawing
+  Draw arbitrary textures inside rectangles
+
+* Physics
+  - Move continuously, test for collisions (simple, no sliding (box<->box)
+
+* Logic
+  - Key presses --> movement, attacking, etc
+  - Mouse movement --> change in direction?
+  - Generate "dungeons" (grids of rooms)
