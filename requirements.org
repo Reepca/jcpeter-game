@@ -8,3 +8,8 @@
   - Key presses --> movement, attacking, etc
   - Mouse movement --> change in direction?
   - Generate "dungeons" (grids of rooms)
+  
+* Sprite
+  - Collision box
+  - Optional texture (4 of them preferably)
+  - Direction it's facing
