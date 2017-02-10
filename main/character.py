@@ -9,7 +9,7 @@ class Character(Sprite):
     radius = 15
     # width, height - note, these are the dimensions for when it is facing
     # north/south.
-    attacksize = 200, 100
+    attackSize = 200, 100
 
     def __init__(self, initPos=(350, 350)):
         super(Character, self).__init__((initPos[x] - Character.radius,
@@ -20,6 +20,8 @@ class Character(Sprite):
         self.velocity = 0, 0
         self.speed = 1
         self.damage = 5
+        self.maxHealth = 100
+        self.currentHealth = 100
         Sprite.autoMoveSprites.append(self)
 
     def attackBox(self):
@@ -28,30 +30,30 @@ class Character(Sprite):
         bottom"""
         if self.direction == WEST:
             return (self.location[x] - Character.radius -
-                    Character.attacksize[y],
-                    self.location[y] - Character.attacksize[x] / 2,
+                    Character.attackSize[y],
+                    self.location[y] - Character.attackSize[x] / 2,
                     self.location[x] - Character.radius,
-                    self.location[y] + Character.attacksize[x] / 2,)
+                    self.location[y] + Character.attackSize[x] / 2,)
 
         elif self.direction == EAST:
             return (self.location[x] + Character.radius,
-                    self.location[y] - Character.attacksize[x] / 2,
+                    self.location[y] - Character.attackSize[x] / 2,
                     self.location[x] + Character.radius +
-                    Character.attacksize[y],
-                    self.location[y] + Character.attacksize[x] / 2)
+                    Character.attackSize[y],
+                    self.location[y] + Character.attackSize[x] / 2)
 
         elif self.direction == SOUTH:
-            return (self.location[x] - Character.attacksize[x] / 2,
+            return (self.location[x] - Character.attackSize[x] / 2,
                     self.location[y] + Character.radius,
-                    self.location[x] + Character.attacksize[x] / 2,
+                    self.location[x] + Character.attackSize[x] / 2,
                     self.location[y] + Character.radius +
-                    Character.attacksize[y])
+                    Character.attackSize[y])
 
         elif self.direction == NORTH:
-            return (self.location[x] - Character.attacksize[x] / 2,
+            return (self.location[x] - Character.attackSize[x] / 2,
                     self.location[y] - Character.radius -
-                    Character.attacksize[y],
-                    self.location[x] + Character.attacksize[x] / 2,
+                    Character.attackSize[y],
+                    self.location[x] + Character.attackSize[x] / 2,
                     self.location[y] - Character.radius)
 
     def isAttacking(self):

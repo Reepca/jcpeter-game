@@ -5,6 +5,7 @@ x = 0
 y = 1
 
 # Enums
+NO_DIR = None
 WEST = 0
 EAST = 1
 SOUTH = 2
