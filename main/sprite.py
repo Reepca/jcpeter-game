@@ -31,8 +31,8 @@ class Sprite(object):
 
         location is a tuple containing x and y position - it should be in the
         visual center of the object."""
-        self.boundingBox = boundingBox
         left, top, right, bottom = boundingBox
+        self.boundingBox = boundingBox
         self.left = left
         self.top = top
         self.right = right

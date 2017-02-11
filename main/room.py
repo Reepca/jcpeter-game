@@ -36,6 +36,12 @@ class Room(Sprite):
     westDoorOpen = None
     westDoorClosed = None
     
+    # Door zones 
+    northDoorZone = None
+    eastDoorZone = None
+    southDoorZone = None
+    westDoorZone = None
+    
     def __init__(self, enterDirection=NO_DIR, type=START, doorStates=[False, False, False, False]):
         """ """
         super(Room, self).__init__((Room.wallDepth, Room.wallDepth, width - Room.wallDepth, height - Room.wallDepth), self, location=(width/2, height/2))
@@ -84,8 +90,10 @@ class Room(Sprite):
         """ """
         self.doorStates[direction] = state
         
+        
     def toggleDoor(self, direction):
         self.doorStates[direction] = not self.doorStates[direction]
+        
         
 def initRoom():
         """Annoyingly enough, we can't use loadImage() until at least setup() time."""
@@ -98,3 +106,8 @@ def initRoom():
         Room.southDoorClosed = loadImage("southDoorClosed.png")
         Room.westDoorOpen = loadImage("westDoorOpen.png")
         Room.westDoorClosed = loadImage("westDoorClosed.png")
+        
+        Room.northDoorZone = (width/2 - Room.northDoorOpen.width/2, 0, width/2 + Room.northDoorOpen.width/2, Room.wallDepth)
+        Room.eastDoorZone = (width - Room.eastDoorOpen.width, height/2 - Room.eastDoorOpen.height/2, width, height/2 + Room.eastDoorOpen.height/2)
+        Room.southDoorZone = (width/2 - Room.southDoorOpen.width/2, height - Room.southDoorOpen.height, width/2 + Room.southDoorOpen.width/2, height)
+        Room.westDoorZone = (0, height/2 - Room.eastDoorOpen.height/2, Room.wallDepth, height/2 + Room.eastDoorOpen.height/2)
