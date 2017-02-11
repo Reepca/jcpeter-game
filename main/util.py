@@ -19,7 +19,9 @@ CLOSED = False
 directionSigns = {WEST: -1, EAST: 1, SOUTH: 1,
                   NORTH: -1}
 
-def boundBoxCheck((s1_left, s1_top, s1_right, s1_bot), (s2_left, s2_top, s2_right, s2_bot)):
+
+def boundBoxCheck((s1_left, s1_top, s1_right, s1_bot), (s2_left, s2_top,
+                                                        s2_right, s2_bot)):
                 # Our left is to the left of their right
         return (s1_left <= s2_right and
                 # Our right is to the right of their left

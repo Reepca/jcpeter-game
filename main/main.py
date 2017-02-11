@@ -7,29 +7,39 @@ The only built in functions will be in here (like draw, setup, keyPressed, etc).
 # Imports
 import sprite
 import character
+import room
 from util import NORTH, WEST, EAST, SOUTH
 
 # Ugly globals
 key_states = dict()
 timeOfLastUpdate = millis()
 player = None
-
+firstRoom = None
+test = 0
 
 def setup():
     size(800, 800)
     # When we try doing this outside of setup(), for some reason we end up with
     # 2 invocations of Character()... and for some reason dict() doesn't work
     # either.
-    global player
+    # Ugly hack
+    room.initRoom()
+    global player, firstRoom
+    firstRoom = room.Room()
+    firstRoom.enter(WEST)
     player = character.Character()
 
 
+
 def draw():
-    global timeOfLastUpdate
+    global timeOfLastUpdate, test
     background(30, 50, 130)
     update(millis() - timeOfLastUpdate)
     timeOfLastUpdate = millis()
     sprite.drawAllSprites()
+    if player.isAttacking():
+        room.Room.currentRoom.toggleDoor(test%4)
+        test += 1
 
 
 def keyPressed():
@@ -46,6 +56,7 @@ def keyPressed():
             player.setWalkX(WEST)
         elif keyCode == RIGHT:
             player.setWalkX(EAST)
+
     else:
         key_states[key] = True
 

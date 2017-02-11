@@ -27,8 +27,8 @@ class Character(Sprite):
 
     def attackBox(self):
         """Gives the sides of the rectangle that is the attack box... in the
-        same form as the boundingBox used by Sprite - that is, left, top, right,
-        bottom"""
+        same form as the boundingBox used by Sprite - that is, left, top,
+        right, bottom"""
         if self.direction == WEST:
             return (self.location[x] - Character.radius -
                     Character.attackSize[y],
@@ -84,7 +84,11 @@ class Character(Sprite):
     def updatePosition(self, timePassed):
         dx = self.velocity[x] * timePassed
         dy = self.velocity[y] * timePassed
-        if boundBoxCheck(Room.currentRoom.boundingBox, (self.left+dx, self.top+dy, self.right+dx, self.bottom+dy)):
+        if boundBoxCheck(Room.currentRoom.boundingBox,
+                         (self.left+dx,
+                          self.top+dy,
+                          self.right+dx,
+                          self.bottom+dy)):
             self.move(dx, dy)
 
 
