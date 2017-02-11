@@ -1,4 +1,4 @@
-from util import SOUTH, x, y
+from util import SOUTH, x, y, boundBoxCheck
 
 
 class Sprite(object):
@@ -31,6 +31,7 @@ class Sprite(object):
 
         location is a tuple containing x and y position - it should be in the
         visual center of the object."""
+        self.boundingBox = boundingBox
         left, top, right, bottom = boundingBox
         self.left = left
         self.top = top
@@ -59,16 +60,8 @@ class Sprite(object):
         self.drawer.draw(self.location[x], self.location[y])
 
     def checkCollision(self, otherSprite):
-                # Our left is to the left of their right
-        return (self.left <= otherSprite.right and
-                # Our right is to the right of their left
-                self.right >= otherSprite.left and
-                # Our bottom is below their top (remember, in Processing top is
-                # lower than bottom)
-                self.bottom >= otherSprite.top and
-                # Our top is above their bottom (remember, in Processing bottom
-                # is higher than top)
-                self.top <= otherSprite.bottom)
+        # Our left is to the left of their right
+        return boundBoxCheck(self, otherSprite)
 
 
 def drawAllSprites():

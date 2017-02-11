@@ -1,5 +1,6 @@
+from room import Room
 from sprite import Sprite
-from util import x, y, WEST, EAST, NORTH, SOUTH, directionSigns
+from util import x, y, WEST, EAST, NORTH, SOUTH, directionSigns, boundBoxCheck
 # Screw you, Python people, you just wasted 3 hours of my life because main.py
 # produces a module named "__main__" instead of a module named "main"...
 import __main__
@@ -18,7 +19,7 @@ class Character(Sprite):
                                          initPos[y] + Character.radius),
                                         self, location=initPos)
         self.velocity = 0, 0
-        self.speed = 1
+        self.speed = .75
         self.damage = 5
         self.maxHealth = 100
         self.currentHealth = 100
@@ -81,7 +82,10 @@ class Character(Sprite):
             rect(left, top, right - left, bottom - top)
 
     def updatePosition(self, timePassed):
-        self.move(self.velocity[x] * timePassed, self.velocity[y] * timePassed)
+        dx = self.velocity[x] * timePassed
+        dy = self.velocity[y] * timePassed
+        if boundBoxCheck(Room.currentRoom.boundingBox, (self.left+dx, self.top+dy, self.right+dx, self.bottom+dy)):
+            self.move(dx, dy)
 
 
 def updatePositions(timePassed):
