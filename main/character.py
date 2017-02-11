@@ -1,8 +1,6 @@
 from room import Room
 from sprite import Sprite
 from util import x, y, WEST, EAST, NORTH, SOUTH, directionSigns, boundBoxCheck
-# Screw you, Python people, you just wasted 3 hours of my life because main.py
-# produces a module named "__main__" instead of a module named "main"...
 import __main__
 
 
@@ -59,11 +57,12 @@ class Character(Sprite):
 
     def isAttacking(self):
         return __main__.key_states.get(' ')
-    
-    def triggerDoorToggle(self, triggerZone, enterDoor, function, arg1=None):
-        if(enterDoor and boundBoxCheck(triggerZone, (self.left, self.top, self.right, self.bottom))):
-            __main__.enterDoor = False
-            function(arg1)
+
+    def triggerDoorToggle(self):
+        # Remember how you gave Sprite a boundingBox attribute?
+        for door in Room.currentRoom.doors:
+            if(boundBoxCheck(self.boundingBox, door.boundingBox)):
+                door.toggleOpen()
 
     def setWalkY(self, flag):
         if flag is None:
@@ -89,31 +88,31 @@ class Character(Sprite):
     def updatePosition(self, timePassed):
         dx = self.velocity[x] * timePassed
         dy = self.velocity[y] * timePassed
-        futureLeft = self.left + dx
-        futureRight = self.right + dx
-        futureTop = self.top + dy
-        futureBottom = self.bottom + dy
+        left, top, right, bottom = self.boundingBox
+        futureLeft = left + dx
+        futureRight = right + dx
+        futureTop = top + dy
+        futureBottom = bottom + dy
 
-        if boundBoxCheck(Room.currentRoom.boundingBox, 
-
+        if boundBoxCheck(Room.currentRoom.boundingBox,
                          (futureLeft,
-                          self.top,
+                          top,
                           futureRight,
-                          self.bottom)):
+                          bottom)):
 
             if boundBoxCheck(Room.currentRoom.boundingBox,
-                            (futureLeft,
-                             futureTop,
-                             futureRight,
-                             futureBottom)):
+                             (futureLeft,
+                              futureTop,
+                              futureRight,
+                              futureBottom)):
                 self.move(dx, dy)
             else:
                 self.move(dx, 0)
         elif boundBoxCheck(Room.currentRoom.boundingBox,
-                          (self.left,
-                           futureTop,
-                           self.right,
-                           futureBottom)):
+                           (left,
+                            futureTop,
+                            right,
+                            futureBottom)):
             self.move(0, dy)
 
 

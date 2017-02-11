@@ -8,7 +8,7 @@ The only built in functions will be in here (like draw, setup, keyPressed, etc).
 import sprite
 import character
 import room
-from util import NORTH, WEST, EAST, SOUTH
+from util import NORTH, WEST, EAST, SOUTH, CLOSED, AJAR
 
 # Ugly globals
 key_states = dict()
@@ -16,6 +16,7 @@ timeOfLastUpdate = millis()
 player = None
 firstRoom = None
 test = 0
+enterDoor = False
 
 def setup():
     size(800, 800)
@@ -30,22 +31,21 @@ def setup():
     player = character.Character()
 
 
-
 def draw():
-    global timeOfLastUpdate, test
+    global timeOfLastUpdate, test, player, enterDoor
     background(30, 50, 130)
     update(millis() - timeOfLastUpdate)
     timeOfLastUpdate = millis()
     sprite.drawAllSprites()
-    if player.isAttacking():
-        room.Room.currentRoom.toggleDoor(test%4)
-        test += 1
 
 
 def keyPressed():
-    global key_states
+    global key_states, enterDoor
     # Adjust player velocity based on arrow key states
     # (UP, DOWN, LEFT, RIGHT)
+    if key == 'q' or key == 'Q':
+        player.triggerDoorToggle()
+
     if key == CODED:
         key_states[keyCode] = True
         if keyCode == UP:

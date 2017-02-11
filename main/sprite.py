@@ -18,7 +18,8 @@ class Sprite(object):
     # updatePosition() method!
     autoMoveSprites = []
 
-    def __init__(self, boundingBox, drawer, direction=SOUTH, location=(0, 0)):
+    def __init__(self, boundingBox, drawer, direction=SOUTH, location=(0, 0),
+                 manageInSprite=True):
         """boundingBox is a tuple of the form left, top, right, bottom.
         IMPORTANT NOTE: top here means "Processing visual top", so it's
         actually numerically lower than bottom.
@@ -33,29 +34,24 @@ class Sprite(object):
         visual center of the object."""
         left, top, right, bottom = boundingBox
         self.boundingBox = boundingBox
-        self.left = left
-        self.top = top
-        self.right = right
-        self.bottom = bottom
         self.drawer = drawer
         self.direction = direction
         self.location = location
 
         # As mentioned above, the class keeps track of the stuff it's made so
         # we can easily draw all of them, update their positions, etc.
-        Sprite.allSprites.append(self)
+        if manageInSprite:
+            Sprite.allSprites.append(self)
 
     def move(self, deltaX, deltaY):
         # Update location
         self.location = (self.location[x] + deltaX, self.location[y] + deltaY)
 
         # Update hitbox
-        self.left += deltaX
-        self.right += deltaX
-        self.top += deltaY
-        self.bottom += deltaY
-
-    def draw(self):
+        left, top, right, bottom = self.boundingBox
+        self.boundingBox = (left + deltaX, top + deltaY, right + deltaX, bottom +
+                            deltaY)
+    def drawSprite(self):
         # Outsource drawing to some other object
         self.drawer.draw(self.location[x], self.location[y])
 
@@ -66,4 +62,4 @@ class Sprite(object):
 
 def drawAllSprites():
     for sprite in Sprite.allSprites:
-        sprite.draw(sprite.location[x], sprite.location[y])
+        sprite.drawSprite()

@@ -38,10 +38,7 @@ def draw():
     update(millis() - timeOfLastUpdate)
     timeOfLastUpdate = millis()
     sprite.drawAllSprites()
-    player.triggerDoorToggle(room.Room.northDoorZone, enterDoor, firstRoom.toggleDoor, arg1=NORTH)
-    player.triggerDoorToggle(room.Room.southDoorZone, enterDoor, firstRoom.toggleDoor, arg1=SOUTH)
-    player.triggerDoorToggle(room.Room.eastDoorZone, enterDoor, firstRoom.toggleDoor, arg1=EAST)
-    player.triggerDoorToggle(room.Room.westDoorZone, enterDoor, firstRoom.toggleDoor, arg1=WEST)
+    
     
 
 def keyPressed():
@@ -49,9 +46,14 @@ def keyPressed():
     # Adjust player velocity based on arrow key states
     # (UP, DOWN, LEFT, RIGHT)
     if key == 'q' or key == 'Q':
-        enterDoor = True
-    else:
-        enterDoor = False
+        player.triggerDoorToggle(room.Room.northDoorZone, enterDoor,
+                                 firstRoom.toggleDoor, arg1=NORTH)
+        player.triggerDoorToggle(room.Room.southDoorZone, enterDoor,
+                                 firstRoom.toggleDoor, arg1=SOUTH)
+        player.triggerDoorToggle(room.Room.eastDoorZone, enterDoor,
+                                 firstRoom.toggleDoor, arg1=EAST)
+        player.triggerDoorToggle(room.Room.westDoorZone, enterDoor,
+                                 firstRoom.toggleDoor, arg1=WEST)
     
     if key == CODED:
         key_states[keyCode] = True
