@@ -84,12 +84,29 @@ class Character(Sprite):
     def updatePosition(self, timePassed):
         dx = self.velocity[x] * timePassed
         dy = self.velocity[y] * timePassed
+        futureLeft = self.left + dx
+        futureRight = self.right + dx
+        futureTop = self.top + dy
+        futureBottom = self.bottom + dy
         if boundBoxCheck(Room.currentRoom.boundingBox,
-                         (self.left+dx,
-                          self.top+dy,
-                          self.right+dx,
-                          self.bottom+dy)):
-            self.move(dx, dy)
+                         (futureLeft,
+                          self.top,
+                          futureRight,
+                          self.bottom)):
+            if boundBoxCheck(Room.currentRoom.boundingBox,
+                             (futureLeft,
+                              futureTop,
+                              futureRight,
+                              futureBottom)):
+                self.move(dx, dy)
+            else:
+                self.move(dx, 0)
+        elif boundBoxCheck(Room.currentRoom.boundingBox,
+                           (self.left,
+                            futureTop,
+                            self.right,
+                            futureBottom)):
+            self.move(0, dy)
 
 
 def updatePositions(timePassed):
