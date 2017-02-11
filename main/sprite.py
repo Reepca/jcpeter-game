@@ -41,8 +41,8 @@ class Sprite(object):
         self.direction = direction
         self.location = location
 
-        # As mentioned above, the class keeps track of the stuff it's made so we
-        # can easily draw all of them, update their positions, etc.
+        # As mentioned above, the class keeps track of the stuff it's made so
+        # we can easily draw all of them, update their positions, etc.
         Sprite.allSprites.append(self)
 
     def move(self, deltaX, deltaY):
