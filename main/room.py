@@ -1,28 +1,7 @@
 from util import NO_DIR, WEST, EAST, SOUTH, NORTH, x, y, AJAR, CLOSED
 from sprite import Sprite
 
-class Room(Sprite):
-    
-    # Wall depth in pixels
-    wallDepth = 75
-    
-    currentRoom = None
-    
-    # All rooms
-    allRooms = []
-    
-    # Some enums for the types of rooms
-    START = 0
-    PUZZLE = 1
-    BATTLE = 2
-    EMPTY = 3
-    END = 4
-    
-    # Room images
-    startRoom = None
-    puzzleRoom = None
-    endRoom = None
-    
+class Door(Sprite):
     # Door images
     # Loading only works as early as setup(), unfortunately, so this has to
     # be put off until then... see initRoom() at bottom of file.
@@ -31,26 +10,91 @@ class Room(Sprite):
     northDoorClosed = None
     eastDoorOpen = None
     eastDoorClosed = None
-    southDoorOpen = None
-    southDoorClosed = None
     westDoorOpen = None
     westDoorClosed = None
-    
-    # Door zones 
-    northDoorZone = None
-    eastDoorZone = None
-    southDoorZone = None
-    westDoorZone = None
-    
-    def __init__(self, enterDirection=NO_DIR, type=START, doorStates=[False, False, False, False]):
+    southDoorOpen = None
+    southDoorClosed = None
+    doorZones = []
+
+    def __init__(self, direction, initState=CLOSED):
+        super(Door, self).__init__(Door.doorZones[direction], self,
+                                   manageInSprite=False)
+        self.state = initState
+        self.direction = direction
+
+    def draw(self, x, y):
+        if self.direction == NORTH:
+            if self.state == AJAR:
+                image(Door.northDoorOpen, width/2 - Door.northDoorOpen.width/2,
+                      0)
+            else:
+                image(Door.northDoorClosed, width/2 -
+                      Door.northDoorClosed.width/2, 0)
+        elif self.direction == EAST:
+            if self.state == AJAR:
+                image(Door.eastDoorOpen, width - Door.eastDoorOpen.width,
+                      height/2 - Door.eastDoorOpen.height/2)
+            else:
+                image(Door.eastDoorClosed, width - Door.eastDoorClosed.width,
+                      height/2 - Door.eastDoorClosed.height/2)
+        elif self.direction == SOUTH:
+            if self.state == AJAR:
+                image(Door.southDoorOpen, width/2 - Door.southDoorOpen.width/2,
+                      height - Door.southDoorOpen.height)
+            else:
+                image(Door.southDoorClosed, width/2 -
+                      Door.southDoorClosed.width/2, height -
+                      Door.southDoorClosed.height)
+        elif self.direction == WEST:
+            if self.state == AJAR:
+                image(Door.westDoorOpen, 0,
+                      height/2 - Door.westDoorOpen.height/2)
+            else:
+                image(Door.westDoorClosed, 0,
+                  height/2 - Door.westDoorClosed.height/2)
+
+    def toggleOpen(self):
+        self.state = not self.state
+
+
+class Room(Sprite):
+
+    # Wall depth in pixels
+    wallDepth = 75
+
+    currentRoom = None
+
+    # All rooms
+    allRooms = []
+
+    # Some enums for the types of rooms
+    START = 0
+    PUZZLE = 1
+    BATTLE = 2
+    EMPTY = 3
+    END = 4
+
+    # Room images
+    startRoom = None
+    puzzleRoom = None
+    endRoom = None
+
+    def __init__(self, enterDirection=NO_DIR, type=START, doors=None):
         """ """
-        super(Room, self).__init__((Room.wallDepth, Room.wallDepth, width - Room.wallDepth, height - Room.wallDepth), self, location=(width/2, height/2))
+        if doors:
+            self.doors = doors
+        else:
+            self.doors = [Door(WEST), Door(EAST), Door(SOUTH), Door(NORTH)]
+        super(Room, self).__init__((Room.wallDepth,
+                                    Room.wallDepth, width - Room.wallDepth,
+                                    height - Room.wallDepth),
+                                   self,
+                                   location=(width/2,
+                                             height/2)) 
         self.type = type
         self.enterDirection = enterDirection
-        self.doorStates = doorStates
         Room.allRooms.append(self)
-        
-        
+
     def enter(self, enterDirection):
         self.enterDirection = enterDirection
         Room.currentRoom = self
@@ -66,48 +110,53 @@ class Room(Sprite):
         elif type == Room.END:
             pass
         image(drawImg, 0, 0)
-            
-        # draw the doors in their state
-        if self.doorStates[NORTH]:
-            image(Room.northDoorOpen, width/2 - Room.northDoorOpen.width/2, 0)
-        else:
-            image(Room.northDoorClosed, width/2 - Room.northDoorClosed.width/2, 0)
-        if self.doorStates[EAST]:
-            image(Room.eastDoorOpen, width - Room.eastDoorOpen.width, height/2 - Room.eastDoorOpen.height/2)
-        else:
-            image(Room.eastDoorClosed,width - Room.eastDoorClosed.width, height/2 - Room.eastDoorClosed.height/2)
-        if self.doorStates[SOUTH]:
-            image(Room.southDoorOpen, width/2 - Room.southDoorOpen.width/2, height - Room.southDoorOpen.height)
-        else:
-            image(Room.southDoorClosed, width/2 - Room.southDoorClosed.width/2, height - Room.southDoorClosed.height)
-        if self.doorStates[WEST]:
-            image(Room.westDoorOpen, 0, height/2 - Room.westDoorOpen.height/2)
-        else:
-            image(Room.westDoorClosed, 0, height/2 - Room.westDoorClosed.height/2)
-            
-            
+
+        for door in self.doors:
+            door.drawSprite()
+
     def updateDoor(self, direction, state):
         """ """
-        self.doorStates[direction] = state
-        
-        
+        self.doors[direction].state = state
+
     def toggleDoor(self, direction):
-        self.doorStates[direction] = not self.doorStates[direction]
-        
-        
+        self.doors[direction].state = not self.doors[direction].state
+
+
+
+
+def initDoor():
+    Door.northDoorOpen = loadImage("northDoorOpen.png")
+    Door.northDoorClosed = loadImage("northDoorClosed.png")
+    Door.eastDoorOpen = loadImage("eastDoorOpen.png")
+    Door.eastDoorClosed = loadImage("eastDoorClosed.png")
+    Door.southDoorOpen = loadImage("southDoorOpen.png")
+    Door.southDoorClosed = loadImage("southDoorClosed.png")
+    Door.westDoorOpen = loadImage("westDoorOpen.png")
+    Door.westDoorClosed = loadImage("westDoorClosed.png")
+    # West
+    Door.doorZones.append((0,
+                           height/2 - Door.eastDoorOpen.height/2,
+                           Room.wallDepth,
+                           height/2 + Door.eastDoorOpen.height/2))
+    # East
+    Door.doorZones.append((width - Room.wallDepth,
+                           height/2 - Door.eastDoorOpen.height/2,
+                           width,
+                           height/2 + Door.eastDoorOpen.height/2))
+    # South
+    Door.doorZones.append((width/2 - Door.southDoorOpen.width/2,
+                           height - Room.wallDepth,
+                           width/2 + Door.southDoorOpen.width/2,
+                           height))
+    # North
+    Door.doorZones.append((width/2 - Door.northDoorOpen.width/2,
+                           0,
+                           width/2 + Door.northDoorOpen.width/2,
+                           Room.wallDepth))
+
+
 def initRoom():
-        """Annoyingly enough, we can't use loadImage() until at least setup() time."""
+        """Annoyingly enough, we can't use loadImage() until at least setup()
+        time."""
         Room.startRoom = loadImage("startRoom.png")
-        Room.northDoorOpen = loadImage("northDoorOpen.png")
-        Room.northDoorClosed = loadImage("northDoorClosed.png")
-        Room.eastDoorOpen = loadImage("eastDoorOpen.png")
-        Room.eastDoorClosed = loadImage("eastDoorClosed.png")
-        Room.southDoorOpen = loadImage("southDoorOpen.png")
-        Room.southDoorClosed = loadImage("southDoorClosed.png")
-        Room.westDoorOpen = loadImage("westDoorOpen.png")
-        Room.westDoorClosed = loadImage("westDoorClosed.png")
-        
-        Room.northDoorZone = (width/2 - Room.northDoorOpen.width/2, 0, width/2 + Room.northDoorOpen.width/2, Room.wallDepth)
-        Room.eastDoorZone = (width - Room.eastDoorOpen.width, height/2 - Room.eastDoorOpen.height/2, width, height/2 + Room.eastDoorOpen.height/2)
-        Room.southDoorZone = (width/2 - Room.southDoorOpen.width/2, height - Room.southDoorOpen.height, width/2 + Room.southDoorOpen.width/2, height)
-        Room.westDoorZone = (0, height/2 - Room.eastDoorOpen.height/2, Room.wallDepth, height/2 + Room.eastDoorOpen.height/2)
+        initDoor()
