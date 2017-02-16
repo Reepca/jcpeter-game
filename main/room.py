@@ -64,9 +64,6 @@ class Room(Sprite):
 
     currentRoom = None
 
-    # All rooms
-    allRooms = []
-
     # Some enums for the types of rooms
     START = 0
     PUZZLE = 1
@@ -79,43 +76,52 @@ class Room(Sprite):
     puzzleRoom = None
     endRoom = None
 
-    def __init__(self, enterDirection=NO_DIR, type=START, doors=None):
+    def __init__(self, enterDirection=NO_DIR, type=START, doors=None, gridCoord=[None, None]):
         """ """
         if doors:
             self.doors = doors
         else:
-            self.doors = [Door(WEST), Door(EAST), Door(SOUTH), Door(NORTH)]
+            self.doors = [Door(WEST), Door(NORTH), Door(EAST), Door(SOUTH)]
+            
+        print "doors: ", self.doors    
+        
         super(Room, self).__init__((Room.wallDepth,
                                     Room.wallDepth, width - Room.wallDepth,
                                     height - Room.wallDepth),
                                    self,
                                    location=(width/2,
                                              height/2)) 
+        self.gridCoord = gridCoord
+        self.adjRooms = [None, None, None, None]
         self.type = type
         self.enterDirection = enterDirection
-        Room.allRooms.append(self)
 
     def enter(self, enterDirection):
         self.enterDirection = enterDirection
         Room.currentRoom = self
+        print "enter: (Room.currentRoom)"
+        print Room.currentRoom
         self.updateDoor(enterDirection, AJAR)
 
     def draw(self, arg1, arg2):
-        # draw the background image based on room type
-        drawImg = Room.startRoom
-        if type == Room.START:
-            pass
-        elif type == Room.PUZZLE:
-            pass
-        elif type == Room.END:
-            pass
-        image(drawImg, 0, 0)
-
-        for door in self.doors:
-            door.drawSprite()
+        if self == Room.currentRoom:
+            # draw the background image based on the type of currentRoom
+            drawImg = None
+            if Room.currentRoom.type == Room.START:
+                drawImg = Room.startRoom
+            elif Room.currentRoom.type == Room.PUZZLE:
+                drawImg = Room.puzzleRoom
+            elif Room.currentRoom.type == Room.END:
+                drawImg = Room.endRoom
+            image(drawImg, 0, 0)
+    
+            for door in self.doors:
+                door.drawSprite()
 
     def updateDoor(self, direction, state):
         """ """
+        print "updateDoor: (self)"
+        print self
         self.doors[direction].state = state
 
     def toggleDoor(self, direction):
@@ -159,4 +165,6 @@ def initRoom():
         """Annoyingly enough, we can't use loadImage() until at least setup()
         time."""
         Room.startRoom = loadImage("startRoom.png")
+        Room.puzzleRoom = loadImage("puzzleRoom.png")
+        Room.endRoom = loadImage("endRoom.png")
         initDoor()

@@ -1,6 +1,6 @@
 from room import Room
 from sprite import Sprite
-from util import x, y, WEST, EAST, NORTH, SOUTH, directionSigns, boundBoxCheck
+from util import x, y, NO_DIR, WEST, EAST, NORTH, SOUTH, directionSigns, boundBoxCheck
 import __main__
 
 
@@ -63,6 +63,17 @@ class Character(Sprite):
         for door in Room.currentRoom.doors:
             if(boundBoxCheck(self.boundingBox, door.boundingBox)):
                 door.toggleOpen()
+                # if a room exists past the door you're trying to enter
+                if Room.currentRoom.adjRooms[door.direction] != None:
+                    oppositeDir = NO_DIR
+                    oppositeDir = EAST if door.direction == WEST else oppositeDir
+                    oppositeDir = NORTH if door.direction == SOUTH else oppositeDir
+                    oppositeDir = SOUTH if door.direction == NORTH else oppositeDir
+                    oppositeDir = WEST if door.direction == EAST else oppositeDir
+                    print "triggerDoorToggle: (Room.currentRoom.adjRooms[door.direction])"
+                    print Room.currentRoom.adjRooms[door.direction]
+                    Room.currentRoom.adjRooms[door.direction].enter(oppositeDir)
+                
 
     def setWalkY(self, flag):
         if flag is None:

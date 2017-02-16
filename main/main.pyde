@@ -8,13 +8,15 @@ The only built in functions will be in here (like draw, setup, keyPressed, etc).
 import sprite
 import character
 import room
-from util import NORTH, WEST, EAST, SOUTH, CLOSED, AJAR
+import dungeon
+from util import NO_DIR, NORTH, WEST, EAST, SOUTH, CLOSED, AJAR
 
 # Ugly globals
 key_states = dict()
 timeOfLastUpdate = millis()
 player = None
 firstRoom = None
+level1 = None
 test = 0
 enterDoor = False
 
@@ -25,11 +27,12 @@ def setup():
     # either.
     # Ugly hack
     room.initRoom()
-    global player, firstRoom
-    firstRoom = room.Room()
+    global player, firstRoom, level1
+    firstRoom = room.Room(gridCoord=[0, 0])
     firstRoom.enter(WEST)
+    level1 = dungeon.Dungeon(10)
     player = character.Character()
-
+    
 
 
 def draw():
@@ -38,23 +41,15 @@ def draw():
     update(millis() - timeOfLastUpdate)
     timeOfLastUpdate = millis()
     sprite.drawAllSprites()
-    
-    
+
 
 def keyPressed():
     global key_states, enterDoor
     # Adjust player velocity based on arrow key states
     # (UP, DOWN, LEFT, RIGHT)
     if key == 'q' or key == 'Q':
-        player.triggerDoorToggle(room.Room.northDoorZone, enterDoor,
-                                 firstRoom.toggleDoor, arg1=NORTH)
-        player.triggerDoorToggle(room.Room.southDoorZone, enterDoor,
-                                 firstRoom.toggleDoor, arg1=SOUTH)
-        player.triggerDoorToggle(room.Room.eastDoorZone, enterDoor,
-                                 firstRoom.toggleDoor, arg1=EAST)
-        player.triggerDoorToggle(room.Room.westDoorZone, enterDoor,
-                                 firstRoom.toggleDoor, arg1=WEST)
-    
+        player.triggerDoorToggle()
+
     if key == CODED:
         key_states[keyCode] = True
         if keyCode == UP:
