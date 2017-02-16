@@ -104,7 +104,7 @@ class Room(Sprite):
         # enter a room from a direction 
         self.enterDirection = enterDirection
         Room.currentRoom = self
-        print "enterDirection: ", enterDirection
+        print "adjRooms: ", self.adjRooms
         if enterDirection != NO_DIR:
             self.doors[enterDirection].state = AJAR
             if self.adjRooms[enterDirection] != None:

@@ -20,7 +20,7 @@ class Dungeon(object):
         self.addRoom(self.rooms[1], Room.END, SOUTH)
         self.addRoom(self.rooms[0], Room.PUZZLE, SOUTH)
         
-        # notice that rooms[2] and rooms[3] should connect, this is what relinkRooms and 
+        # notice that rooms[2] and rooms[3] should connect, this is what linkRooms and 
         # the gridCoords are for.
         
             
@@ -55,6 +55,27 @@ class Dungeon(object):
             newRoom.adjRooms[opposite(direction)] = adjRoom
         
         self.rooms.append(newRoom)
+        self.linkRooms(newRoom)
         
-    def relinkRooms(self):
+    def linkRooms(self, linkRoom):
         """ """
+        for room in self.rooms:
+            
+            if room.gridCoord[x] == linkRoom.gridCoord[x]:
+                # there is a room north of link room
+                if room.gridCoord[y] == linkRoom.gridCoord[y] - 1:
+                    room.adjRooms[SOUTH] = linkRoom
+                    linkRoom.adjRooms[NORTH] = room
+                # there is a room south of linkRoom
+                elif room.gridCoord[y] == linkRoom.gridCoord[y] + 1:
+                    room.adjRooms[NORTH] = linkRoom
+                    linkRoom.adjRooms[SOUTH] = room
+            if room.gridCoord[y] == linkRoom.gridCoord[y]:
+                # there is a room west of link room
+                if room.gridCoord[x] == linkRoom.gridCoord[x] - 1:
+                    room.adjRooms[EAST] = linkRoom
+                    linkRoom.adjRooms[WEST] = room
+                # there is a room east of linkRoom
+                elif room.gridCoord[x] == linkRoom.gridCoord[x] + 1:
+                    room.adjRooms[WEST] = linkRoom
+                    linkRoom.adjRooms[EAST] = room
