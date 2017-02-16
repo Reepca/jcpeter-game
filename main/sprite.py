@@ -51,6 +51,8 @@ class Sprite(object):
         left, top, right, bottom = self.boundingBox
         self.boundingBox = (left + deltaX, top + deltaY, right + deltaX, bottom +
                             deltaY)
+        
+        
     def drawSprite(self):
         # Outsource drawing to some other object
         self.drawer.draw(self.location[x], self.location[y])

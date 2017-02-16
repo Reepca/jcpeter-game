@@ -7,9 +7,10 @@ y = 1
 # Enums
 NO_DIR = None
 WEST = 0
-EAST = 1
-SOUTH = 2
-NORTH = 3
+NORTH = 1
+EAST = 2
+SOUTH = 3
+
 
 AJAR = True
 CLOSED = False
@@ -32,3 +33,11 @@ def boundBoxCheck((s1_left, s1_top, s1_right, s1_bot), (s2_left, s2_top,
                 # Our top is above their bottom (remember, in Processing bottom
                 # is higher than top)
                 s1_top <= s2_bot)
+        
+def opposite(direction):
+    oppositeDir = NO_DIR
+    oppositeDir = EAST if direction == WEST else oppositeDir
+    oppositeDir = NORTH if direction == SOUTH else oppositeDir
+    oppositeDir = SOUTH if direction == NORTH else oppositeDir
+    oppositeDir = WEST if direction == EAST else oppositeDir
+    return oppositeDir

@@ -1,6 +1,7 @@
 from room import Room
+from room import Door
 from sprite import Sprite
-from util import x, y, NO_DIR, WEST, EAST, NORTH, SOUTH, directionSigns, boundBoxCheck
+from util import x, y, NO_DIR, WEST, EAST, NORTH, SOUTH, directionSigns, boundBoxCheck, opposite
 import __main__
 
 
@@ -33,7 +34,14 @@ class Character(Sprite):
                     self.location[y] - Character.attackSize[x] / 2,
                     self.location[x] - Character.radius,
                     self.location[y] + Character.attackSize[x] / 2,)
-
+            
+        elif self.direction == NORTH:
+            return (self.location[x] - Character.attackSize[x] / 2,
+                    self.location[y] - Character.radius -
+                    Character.attackSize[y],
+                    self.location[x] + Character.attackSize[x] / 2,
+                    self.location[y] - Character.radius)
+            
         elif self.direction == EAST:
             return (self.location[x] + Character.radius,
                     self.location[y] - Character.attackSize[x] / 2,
@@ -48,12 +56,7 @@ class Character(Sprite):
                     self.location[y] + Character.radius +
                     Character.attackSize[y])
 
-        elif self.direction == NORTH:
-            return (self.location[x] - Character.attackSize[x] / 2,
-                    self.location[y] - Character.radius -
-                    Character.attackSize[y],
-                    self.location[x] + Character.attackSize[x] / 2,
-                    self.location[y] - Character.radius)
+        
 
     def isAttacking(self):
         return __main__.key_states.get(' ')
@@ -61,19 +64,26 @@ class Character(Sprite):
     def triggerDoorToggle(self):
         # Remember how you gave Sprite a boundingBox attribute?
         for door in Room.currentRoom.doors:
+            
             if(boundBoxCheck(self.boundingBox, door.boundingBox)):
+                print door
                 door.toggleOpen()
                 # if a room exists past the door you're trying to enter
                 if Room.currentRoom.adjRooms[door.direction] != None:
-                    oppositeDir = NO_DIR
-                    oppositeDir = EAST if door.direction == WEST else oppositeDir
-                    oppositeDir = NORTH if door.direction == SOUTH else oppositeDir
-                    oppositeDir = SOUTH if door.direction == NORTH else oppositeDir
-                    oppositeDir = WEST if door.direction == EAST else oppositeDir
-                    print "triggerDoorToggle: (Room.currentRoom.adjRooms[door.direction])"
-                    print Room.currentRoom.adjRooms[door.direction]
-                    Room.currentRoom.adjRooms[door.direction].enter(oppositeDir)
-                
+                    Room.currentRoom.adjRooms[door.direction].enter(opposite(door.direction))
+                    
+                    # adjust player position so they are by the door they just opened
+                    print "currentRoom: ", Room.currentRoom
+                    print "Door Direction: ", door.direction
+                    if door.direction == EAST:
+                        self.move(-self.location[x] + Door.westDoorOpen.width, 0)
+                    elif door.direction == SOUTH:
+                        self.move(0, -self.location[y] + Door.northDoorOpen.height)
+                    elif door.direction == NORTH:
+                        self.move(0, -self.location[y] + height - Door.southDoorOpen.height)
+                    elif door.direction == WEST:
+                        self.move(-self.location[x] + width - Door.eastDoorOpen.width, 0) 
+                return
 
     def setWalkY(self, flag):
         if flag is None:
@@ -105,25 +115,12 @@ class Character(Sprite):
         futureTop = top + dy
         futureBottom = bottom + dy
 
-        if boundBoxCheck(Room.currentRoom.boundingBox,
-                         (futureLeft,
-                          top,
-                          futureRight,
-                          bottom)):
-
-            if boundBoxCheck(Room.currentRoom.boundingBox,
-                             (futureLeft,
-                              futureTop,
-                              futureRight,
-                              futureBottom)):
+        if boundBoxCheck(Room.currentRoom.boundingBox,(futureLeft,top,futureRight,bottom)):
+            if boundBoxCheck(Room.currentRoom.boundingBox,(futureLeft,futureTop,futureRight,futureBottom)):
                 self.move(dx, dy)
             else:
                 self.move(dx, 0)
-        elif boundBoxCheck(Room.currentRoom.boundingBox,
-                           (left,
-                            futureTop,
-                            right,
-                            futureBottom)):
+        elif boundBoxCheck(Room.currentRoom.boundingBox,(left,futureTop,right,futureBottom)):
             self.move(0, dy)
 
 

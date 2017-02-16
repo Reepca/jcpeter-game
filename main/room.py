@@ -1,4 +1,4 @@
-from util import NO_DIR, WEST, EAST, SOUTH, NORTH, x, y, AJAR, CLOSED
+from util import NO_DIR, WEST, EAST, SOUTH, NORTH, x, y, AJAR, CLOSED, opposite
 from sprite import Sprite
 
 class Door(Sprite):
@@ -23,7 +23,14 @@ class Door(Sprite):
         self.direction = direction
 
     def draw(self, x, y):
-        if self.direction == NORTH:
+        if self.direction == WEST:
+            if self.state == AJAR:
+                image(Door.westDoorOpen, 0,
+                      height/2 - Door.westDoorOpen.height/2)
+            else:
+                image(Door.westDoorClosed, 0,
+                  height/2 - Door.westDoorClosed.height/2)
+        elif self.direction == NORTH:
             if self.state == AJAR:
                 image(Door.northDoorOpen, width/2 - Door.northDoorOpen.width/2,
                       0)
@@ -45,15 +52,10 @@ class Door(Sprite):
                 image(Door.southDoorClosed, width/2 -
                       Door.southDoorClosed.width/2, height -
                       Door.southDoorClosed.height)
-        elif self.direction == WEST:
-            if self.state == AJAR:
-                image(Door.westDoorOpen, 0,
-                      height/2 - Door.westDoorOpen.height/2)
-            else:
-                image(Door.westDoorClosed, 0,
-                  height/2 - Door.westDoorClosed.height/2)
+       
 
     def toggleOpen(self):
+        #print "Door ", self.direction, "was ", self.state, "now is " not self.state
         self.state = not self.state
 
 
@@ -76,14 +78,14 @@ class Room(Sprite):
     puzzleRoom = None
     endRoom = None
 
-    def __init__(self, enterDirection=NO_DIR, type=START, doors=None, gridCoord=[None, None]):
+    def __init__(self, enterDirection=NO_DIR, type=START, doors=None, gridCoord=[None, None], currentRoom=False):
         """ """
+        print "Room made"
         if doors:
             self.doors = doors
         else:
             self.doors = [Door(WEST), Door(NORTH), Door(EAST), Door(SOUTH)]
-            
-        print "doors: ", self.doors    
+               
         
         super(Room, self).__init__((Room.wallDepth,
                                     Room.wallDepth, width - Room.wallDepth,
@@ -91,17 +93,24 @@ class Room(Sprite):
                                    self,
                                    location=(width/2,
                                              height/2)) 
+        if currentRoom:
+            Room.currentRoom = self
         self.gridCoord = gridCoord
         self.adjRooms = [None, None, None, None]
         self.type = type
         self.enterDirection = enterDirection
 
     def enter(self, enterDirection):
+        # enter a room from a direction 
         self.enterDirection = enterDirection
         Room.currentRoom = self
-        print "enter: (Room.currentRoom)"
-        print Room.currentRoom
-        self.updateDoor(enterDirection, AJAR)
+        print "enterDirection: ", enterDirection
+        if enterDirection != NO_DIR:
+            self.doors[enterDirection].state = AJAR
+            if self.adjRooms[enterDirection] != None:
+                self.adjRooms[enterDirection].doors[opposite(enterDirection)].state = AJAR
+        print self.gridCoord
+        
 
     def draw(self, arg1, arg2):
         if self == Room.currentRoom:
@@ -120,11 +129,11 @@ class Room(Sprite):
 
     def updateDoor(self, direction, state):
         """ """
-        print "updateDoor: (self)"
-        print self
+        print "Door direction updated:: ", direction
         self.doors[direction].state = state
 
     def toggleDoor(self, direction):
+        print "Door direction toggled:: ", direction
         self.doors[direction].state = not self.doors[direction].state
 
 
@@ -141,9 +150,14 @@ def initDoor():
     Door.westDoorClosed = loadImage("westDoorClosed.png")
     # West
     Door.doorZones.append((0,
-                           height/2 - Door.eastDoorOpen.height/2,
+                           height/2 - Door.westDoorOpen.height/2,
                            Room.wallDepth,
-                           height/2 + Door.eastDoorOpen.height/2))
+                           height/2 + Door.westDoorOpen.height/2))
+    # North
+    Door.doorZones.append((width/2 - Door.northDoorOpen.width/2,
+                           0,
+                           width/2 + Door.northDoorOpen.width/2,
+                           Room.wallDepth))
     # East
     Door.doorZones.append((width - Room.wallDepth,
                            height/2 - Door.eastDoorOpen.height/2,
@@ -154,11 +168,7 @@ def initDoor():
                            height - Room.wallDepth,
                            width/2 + Door.southDoorOpen.width/2,
                            height))
-    # North
-    Door.doorZones.append((width/2 - Door.northDoorOpen.width/2,
-                           0,
-                           width/2 + Door.northDoorOpen.width/2,
-                           Room.wallDepth))
+    
 
 
 def initRoom():

@@ -15,10 +15,7 @@ from util import NO_DIR, NORTH, WEST, EAST, SOUTH, CLOSED, AJAR
 key_states = dict()
 timeOfLastUpdate = millis()
 player = None
-firstRoom = None
 level1 = None
-test = 0
-enterDoor = False
 
 def setup():
     size(800, 800)
@@ -28,15 +25,14 @@ def setup():
     # Ugly hack
     room.initRoom()
     global player, firstRoom, level1
-    firstRoom = room.Room(gridCoord=[0, 0])
-    firstRoom.enter(WEST)
     level1 = dungeon.Dungeon(10)
+    
     player = character.Character()
     
 
 
 def draw():
-    global timeOfLastUpdate, test, player, enterDoor
+    global timeOfLastUpdate, test, player
     background(30, 50, 130)
     update(millis() - timeOfLastUpdate)
     timeOfLastUpdate = millis()
