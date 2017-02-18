@@ -1,12 +1,19 @@
 from room import Room
 from room import Door
 from sprite import Sprite
-from util import x, y, NO_DIR, WEST, EAST, NORTH, SOUTH, directionSigns, boundBoxCheck, opposite
+from animation import Animation
+from util import x, y, NO_DIR, WEST, EAST, NORTH, SOUTH, directionSigns, boundBoxCheck, opposite, inZone
 import __main__
 
 
 class Character(Sprite):
-    radius = 15
+    
+    playerAniPrefix = 'player'
+    playerAniType = '.png'
+    playerNumFrames = 30
+    
+    bboxLeniency = 15
+    radius = 25
     # width, height - note, these are the dimensions for when it is facing
     # north/south.
     attackSize = 200, 100
@@ -17,6 +24,11 @@ class Character(Sprite):
                                          initPos[x] + Character.radius,
                                          initPos[y] + Character.radius),
                                         self, location=initPos)
+        
+        self.playerAni = Animation(Character.playerAniPrefix,
+                                   Character.playerAniType,
+                                   Character.playerNumFrames,
+                                   30)
         self.velocity = 0, 0
         self.speed = .75
         self.damage = 5
@@ -104,7 +116,6 @@ class Character(Sprite):
         # Drawing the attack box just to give us an idea of what it's like
         if self.isAttacking():
             left, top, right, bottom = self.attackBox()
-            rect(left, top, right - left, bottom - top)
 
     def updatePosition(self, timePassed):
         dx = self.velocity[x] * timePassed
@@ -115,12 +126,12 @@ class Character(Sprite):
         futureTop = top + dy
         futureBottom = bottom + dy
 
-        if boundBoxCheck(Room.currentRoom.boundingBox,(futureLeft,top,futureRight,bottom)):
-            if boundBoxCheck(Room.currentRoom.boundingBox,(futureLeft,futureTop,futureRight,futureBottom)):
+        if inZone((futureLeft+Character.bboxLeniency,top+Character.bboxLeniency,futureRight-Character.bboxLeniency,bottom-Character.bboxLeniency),Room.currentRoom.boundingBox):
+            if inZone((futureLeft+Character.bboxLeniency,futureTop+Character.bboxLeniency,futureRight-Character.bboxLeniency,futureBottom-Character.bboxLeniency), Room.currentRoom.boundingBox):
                 self.move(dx, dy)
             else:
                 self.move(dx, 0)
-        elif boundBoxCheck(Room.currentRoom.boundingBox,(left,futureTop,right,futureBottom)):
+        elif inZone((left+Character.bboxLeniency,futureTop+Character.bboxLeniency,right-Character.bboxLeniency,futureBottom-Character.bboxLeniency), Room.currentRoom.boundingBox):
             self.move(0, dy)
 
 

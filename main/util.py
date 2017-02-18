@@ -33,7 +33,16 @@ def boundBoxCheck((s1_left, s1_top, s1_right, s1_bot), (s2_left, s2_top,
                 # Our top is above their bottom (remember, in Processing bottom
                 # is higher than top)
                 s1_top <= s2_bot)
-        
+
+def inZone((s1_left, s1_top, s1_right, s1_bot), (s2_left, s2_top,
+                                                        s2_right, s2_bot)):
+    
+    return (s2_left <= s1_left and
+            s2_right >= s1_right and
+            s2_top <= s1_top and
+            s2_bot >= s1_bot)
+
+
 def opposite(direction):
     oppositeDir = NO_DIR
     oppositeDir = EAST if direction == WEST else oppositeDir

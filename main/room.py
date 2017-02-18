@@ -95,6 +95,7 @@ class Room(Sprite):
                                              height/2)) 
         if currentRoom:
             Room.currentRoom = self
+        self.wallBounds = [0, 0, 0, 0]
         self.gridCoord = gridCoord
         self.adjRooms = [None, None, None, None]
         self.type = type
@@ -137,7 +138,11 @@ class Room(Sprite):
         self.doors[direction].state = not self.doors[direction].state
 
 
-
+    def setWallBounds(self):
+        self.wallBounds[WEST] = Door.eastDoorOpen.width
+        self.wallBounds[NORTH] = Door.southDoorOpen.height
+        self.wallBounds[EAST] = Door.westDoorOpen.width
+        self.wallBounds[SOUTH] = Door.southDoorOpen.height
 
 def initDoor():
     Door.northDoorOpen = loadImage("northDoorOpen.png")
@@ -168,7 +173,6 @@ def initDoor():
                            height - Room.wallDepth,
                            width/2 + Door.southDoorOpen.width/2,
                            height))
-    
 
 
 def initRoom():

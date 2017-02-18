@@ -26,7 +26,6 @@ def setup():
     room.initRoom()
     global player, firstRoom, level1
     level1 = dungeon.Dungeon(10)
-    
     player = character.Character()
     
 

@@ -45,17 +45,22 @@ class Dungeon(object):
             gridCoord[x] = adjRoom.gridCoord[x]
             gridCoord[y] = adjRoom.gridCoord[y] + 1
         
+        alreadyExists = False
+        for room in self.rooms:
+            if room.gridCoord == gridCoord:
+                alreadyExists = True
+        
+        if not alreadyExists:
+            # make the room
+            newRoom = Room(direction, type, None, gridCoord)
+        
+            # update pointers
+            if direction != NO_DIR:
+                adjRoom.adjRooms[direction] = newRoom
+                newRoom.adjRooms[opposite(direction)] = adjRoom
             
-        # make the room
-        newRoom = Room(direction, type, None, gridCoord)
-        
-        # update pointers
-        if direction != NO_DIR:
-            adjRoom.adjRooms[direction] = newRoom
-            newRoom.adjRooms[opposite(direction)] = adjRoom
-        
-        self.rooms.append(newRoom)
-        self.linkRooms(newRoom)
+            self.rooms.append(newRoom)
+            self.linkRooms(newRoom)
         
     def linkRooms(self, linkRoom):
         """ """
