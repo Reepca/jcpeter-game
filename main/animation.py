@@ -14,10 +14,11 @@ class Animation(object):
         self.images = []
         
         for img in range(numFrames):
-            self.images.append(loadImage(self.prefix + nf(img, 4) + self.type))
+            tmp = loadImage(self.prefix + nf(img, 4) + self.type)
+            self.images.append(tmp)
             
     def display(self, x, y):
-        image(images[self.currentFrame], x, y)
+        image(self.images[self.currentFrame], x, y)
         timeAtDisplay = millis()
         if timeAtDisplay - self.time > 1000 / self.displayRate:
             self.currentFrame = (self.currentFrame + 1) % self.numFrames

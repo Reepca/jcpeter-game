@@ -10,7 +10,7 @@ class Character(Sprite):
     
     playerAniPrefix = 'player'
     playerAniType = '.png'
-    playerNumFrames = 30
+    playerNumFrames = 6
     
     bboxLeniency = 15
     radius = 25
@@ -28,7 +28,7 @@ class Character(Sprite):
         self.playerAni = Animation(Character.playerAniPrefix,
                                    Character.playerAniType,
                                    Character.playerNumFrames,
-                                   30)
+                                   10)
         self.velocity = 0, 0
         self.speed = .75
         self.damage = 5
@@ -112,7 +112,10 @@ class Character(Sprite):
             self.direction = flag
 
     def draw(self, x, y):
-        ellipse(x, y, 2*Character.radius, 2*Character.radius)
+        # these commented out lines draw the bounding box of the character.
+        #left, top, right, bottom = self.boundingBox
+        #rect(left, top, 2*Character.radius, 2*Character.radius)
+        self.playerAni.display(x-Character.radius, y-Character.radius)
         # Drawing the attack box just to give us an idea of what it's like
         if self.isAttacking():
             left, top, right, bottom = self.attackBox()
