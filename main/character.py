@@ -65,8 +65,8 @@ class Character(Sprite):
                                        Character.playerJumpType,
                                        Character.playerJumpNumFrames,
                                        10)
-        
         self.animations = [self.playerAni, self.playerWalkAni, self.playerAttackAni, self.playerJumpAni]
+        self.currentAnimation = self.animations[IDLE]
         Sprite.autoMoveSprites.append(self)
 
     def attackBox(self):
@@ -149,15 +149,13 @@ class Character(Sprite):
         #left, top, right, bottom = self.boundingBox
         #rect(left, top, 2*Character.radius, 2*Character.radius)
         
-        
+        self.currentAnimation.display(x - Character.radius, y - Character.radius
         if not self.moving:
-            print "Not walking"
-            self.playerAni.display(x-Character.radius, y-Character.radius)
+            self.currentAnimation = self.animations[IDLE]
             
             
         else:
-            print "Walking"
-            self.playerWalkAni.display(x-Character.radius, y-Character.radius)
+            self.currentAnimation = self.animations[WALKING]
             
 
             
@@ -170,6 +168,10 @@ class Character(Sprite):
         dx = self.velocity[x] * timePassed
         dy = self.velocity[y] * timePassed
         left, top, right, bottom = self.boundingBox
+        left += Character.bboxLeniency
+        right -= Character.bboxLeniency
+        top += Character.bboxLeniency
+        bottom -= Character.bboxLeniency
         futureLeft = left + dx
         futureRight = right + dx
         futureTop = top + dy
@@ -179,21 +181,12 @@ class Character(Sprite):
         else:
             self.moving = False
             
-        if inZone((futureLeft+Character.bboxLeniency,
-                   top+Character.bboxLeniency,
-                   futureRight-Character.bboxLeniency,
-                   bottom-Character.bboxLeniency), Room.currentRoom.boundingBox):
-            if inZone((futureLeft+Character.bboxLeniency, 
-                       futureTop+Character.bboxLeniency,
-                       futureRight-Character.bboxLeniency, 
-                       futureBottom-Character.bboxLeniency), Room.currentRoom.boundingBox):
+        if inZone((futureLeft, top, futureRight, bottom), Room.currentRoom.boundingBox):
+            if inZone((futureLeft, futureTop, futureRight, futureBottom), Room.currentRoom.boundingBox):
                 self.move(dx, dy)
             else:
                 self.move(dx, 0)
-        elif inZone((left+Character.bboxLeniency,
-                     futureTop+Character.bboxLeniency,
-                     right-Character.bboxLeniency,
-                     futureBottom-Character.bboxLeniency), Room.currentRoom.boundingBox):
+        elif inZone((left, futureTop, right, futureBottom), Room.currentRoom.boundingBox):
             self.move(0, dy)
         
 
