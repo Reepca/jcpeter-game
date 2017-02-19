@@ -126,7 +126,8 @@ class Room(Sprite):
             image(drawImg, 0, 0)
     
             for door in self.doors:
-                door.drawSprite()
+                if door:
+                    door.drawSprite()
 
     def updateDoor(self, direction, state):
         """ """

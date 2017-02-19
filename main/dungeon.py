@@ -19,8 +19,8 @@ class Dungeon(object):
         
         # add two rooms
         self.addRoom(Room.currentRoom, Room.PUZZLE, EAST)
-        self.addRoom(self.rooms[1],Room.END, SOUTH, [True, True, True, False])
-        self.addRoom(self.rooms[0], Room.PUZZLE, SOUTH)
+        self.addRoom(self.rooms[1],Room.END, SOUTH)
+        self.addRoom(self.rooms[0], Room.PUZZLE, SOUTH, [True, True, True, False])
         
         # notice that rooms[2] and rooms[3] should connect, this is what linkRooms and 
         # the gridCoords are for.
@@ -62,7 +62,7 @@ class Dungeon(object):
                     newDoors.append(None)
             
             # make the room
-            newRoom = Room(direction, type, None, gridCoord, doors=newDoors)
+            newRoom = Room(direction, type, newDoors, gridCoord)
         
             # update pointers
             if direction != NO_DIR:
