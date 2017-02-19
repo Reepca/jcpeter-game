@@ -10,13 +10,31 @@ class Character(Sprite):
     
     playerAniPrefix = 'player'
     playerAniType = '.png'
-    playerNumFrames = 6
+    playerNumFrames = 2
+    
+    playerWalkPrefix = 'playerWalk'
+    playerWalkType = '.png'
+    playerWalkNumFrames = 7
+    
+    playerAttackPrefix = 'playerAttack'
+    playerAttackType = '.png'
+    playerAttackNumFrames = 0
+    
+    playerJumpPrefix = 'playerJump'
+    playerJumpType = '.png'
+    playerJumpNumFrames = 0
     
     bboxLeniency = 15
     radius = 25
     # width, height - note, these are the dimensions for when it is facing
     # north/south.
     attackSize = 200, 100
+
+    IDLE = 0
+    WALKING = 1
+    ATTACKING = 2
+    JUMPING = 3
+    
 
     def __init__(self, initPos=(350, 350)):
         super(Character, self).__init__((initPos[x] - Character.radius,
@@ -25,15 +43,30 @@ class Character(Sprite):
                                          initPos[y] + Character.radius),
                                         self, location=initPos)
         
-        self.playerAni = Animation(Character.playerAniPrefix,
-                                   Character.playerAniType,
-                                   Character.playerNumFrames,
-                                   10)
         self.velocity = 0, 0
-        self.speed = .75
+        self.speed = .45
         self.damage = 5
         self.maxHealth = 100
         self.currentHealth = 100
+        self.moving = False
+        self.playerAni = Animation(Character.playerAniPrefix,
+                                   Character.playerAniType,
+                                   Character.playerNumFrames,
+                                   6)
+        self.playerWalkAni = Animation(Character.playerWalkPrefix,
+                                       Character.playerWalkType,
+                                       Character.playerWalkNumFrames
+                                       )
+        self.playerAttackAni = Animation(Character.playerAttackPrefix,
+                                         Character.playerAttackType,
+                                         Character.playerAttackNumFrames,
+                                         10)
+        self.playerJumpAni = Animation(Character.playerJumpPrefix,
+                                       Character.playerJumpType,
+                                       Character.playerJumpNumFrames,
+                                       10)
+        
+        self.animations = [self.playerAni, self.playerWalkAni, self.playerAttackAni, self.playerJumpAni]
         Sprite.autoMoveSprites.append(self)
 
     def attackBox(self):
@@ -115,7 +148,20 @@ class Character(Sprite):
         # these commented out lines draw the bounding box of the character.
         #left, top, right, bottom = self.boundingBox
         #rect(left, top, 2*Character.radius, 2*Character.radius)
-        self.playerAni.display(x-Character.radius, y-Character.radius)
+        
+        
+        if not self.moving:
+            print "Not walking"
+            self.playerAni.display(x-Character.radius, y-Character.radius)
+            
+            
+        else:
+            print "Walking"
+            self.playerWalkAni.display(x-Character.radius, y-Character.radius)
+            
+
+            
+            
         # Drawing the attack box just to give us an idea of what it's like
         if self.isAttacking():
             left, top, right, bottom = self.attackBox()
@@ -128,15 +174,28 @@ class Character(Sprite):
         futureRight = right + dx
         futureTop = top + dy
         futureBottom = bottom + dy
-
-        if inZone((futureLeft+Character.bboxLeniency,top+Character.bboxLeniency,futureRight-Character.bboxLeniency,bottom-Character.bboxLeniency),Room.currentRoom.boundingBox):
-            if inZone((futureLeft+Character.bboxLeniency,futureTop+Character.bboxLeniency,futureRight-Character.bboxLeniency,futureBottom-Character.bboxLeniency), Room.currentRoom.boundingBox):
+        if abs(dy) > 0 or abs(dx) > 0:
+            self.moving = True
+        else:
+            self.moving = False
+            
+        if inZone((futureLeft+Character.bboxLeniency,
+                   top+Character.bboxLeniency,
+                   futureRight-Character.bboxLeniency,
+                   bottom-Character.bboxLeniency), Room.currentRoom.boundingBox):
+            if inZone((futureLeft+Character.bboxLeniency, 
+                       futureTop+Character.bboxLeniency,
+                       futureRight-Character.bboxLeniency, 
+                       futureBottom-Character.bboxLeniency), Room.currentRoom.boundingBox):
                 self.move(dx, dy)
             else:
                 self.move(dx, 0)
-        elif inZone((left+Character.bboxLeniency,futureTop+Character.bboxLeniency,right-Character.bboxLeniency,futureBottom-Character.bboxLeniency), Room.currentRoom.boundingBox):
+        elif inZone((left+Character.bboxLeniency,
+                     futureTop+Character.bboxLeniency,
+                     right-Character.bboxLeniency,
+                     futureBottom-Character.bboxLeniency), Room.currentRoom.boundingBox):
             self.move(0, dy)
-
+        
 
 def updatePositions(timePassed):
     for sprite in Sprite.autoMoveSprites:

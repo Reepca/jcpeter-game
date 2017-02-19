@@ -2,7 +2,9 @@ from util import NO_DIR, WEST, EAST, SOUTH, NORTH, x, y, AJAR, CLOSED, opposite
 from room import Door
 from room import Room
 
+
 class Dungeon(object):
+    
     def __init__(self, roomCount):
         self.roomCount = roomCount
 
@@ -17,14 +19,13 @@ class Dungeon(object):
         
         # add two rooms
         self.addRoom(Room.currentRoom, Room.PUZZLE, EAST)
-        self.addRoom(self.rooms[1], Room.END, SOUTH)
+        self.addRoom(self.rooms[1],Room.END, SOUTH, [True, True, True, False])
         self.addRoom(self.rooms[0], Room.PUZZLE, SOUTH)
         
         # notice that rooms[2] and rooms[3] should connect, this is what linkRooms and 
         # the gridCoords are for.
-        
             
-    def addRoom(self, adjRoom, type, direction=NO_DIR):
+    def addRoom(self, adjRoom, type, direction=NO_DIR, doors=[True, True, True, True]):
         print "Add Room Called"
         # assign the room new coords relative to the adjacent room 
         gridCoord = [0, 0]
@@ -50,9 +51,18 @@ class Dungeon(object):
             if room.gridCoord == gridCoord:
                 alreadyExists = True
         
+        
+        newDoors = []
         if not alreadyExists:
+            # make the doors
+            for i in range(len(doors)):
+                if doors[i]:
+                    newDoors.append(Door(i))
+                else:
+                    newDoors.append(None)
+            
             # make the room
-            newRoom = Room(direction, type, None, gridCoord)
+            newRoom = Room(direction, type, None, gridCoord, doors=newDoors)
         
             # update pointers
             if direction != NO_DIR:
@@ -61,7 +71,7 @@ class Dungeon(object):
             
             self.rooms.append(newRoom)
             self.linkRooms(newRoom)
-        
+
     def linkRooms(self, linkRoom):
         """ """
         for room in self.rooms:
@@ -84,3 +94,5 @@ class Dungeon(object):
                 elif room.gridCoord[x] == linkRoom.gridCoord[x] + 1:
                     room.adjRooms[WEST] = linkRoom
                     linkRoom.adjRooms[EAST] = room
+                    
+    print "finished dungeon"

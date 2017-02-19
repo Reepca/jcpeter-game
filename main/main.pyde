@@ -17,14 +17,16 @@ timeOfLastUpdate = millis()
 player = None
 level1 = None
 
+
 def setup():
     size(800, 800)
     # When we try doing this outside of setup(), for some reason we end up with
     # 2 invocations of Character()... and for some reason dict() doesn't work
     # either.
     # Ugly hack
+    global player, level1
     room.initRoom()
-    global player, firstRoom, level1
+    
     level1 = dungeon.Dungeon(10)
     player = character.Character()
     
@@ -39,7 +41,7 @@ def draw():
 
 
 def keyPressed():
-    global key_states, enterDoor
+    global key_states
     # Adjust player velocity based on arrow key states
     # (UP, DOWN, LEFT, RIGHT)
     if key == 'q' or key == 'Q':

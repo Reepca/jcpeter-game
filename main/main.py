@@ -40,7 +40,7 @@ def draw():
 
 
 def keyPressed():
-    global key_states, enterDoor
+    global key_states
     # Adjust player velocity based on arrow key states
     # (UP, DOWN, LEFT, RIGHT)
     if key == 'q' or key == 'Q':

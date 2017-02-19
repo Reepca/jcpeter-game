@@ -86,7 +86,7 @@ class Room(Sprite):
         else:
             self.doors = [Door(WEST), Door(NORTH), Door(EAST), Door(SOUTH)]
                
-        
+        print self.doors
         super(Room, self).__init__((Room.wallDepth,
                                     Room.wallDepth, width - Room.wallDepth,
                                     height - Room.wallDepth),
@@ -173,6 +173,7 @@ def initDoor():
                            height - Room.wallDepth,
                            width/2 + Door.southDoorOpen.width/2,
                            height))
+    print "doorsZones made"
 
 
 def initRoom():
