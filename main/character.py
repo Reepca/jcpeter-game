@@ -24,8 +24,11 @@ class Character(Sprite):
     playerJumpType = '.png'
     playerJumpNumFrames = 0
     
-    bboxLeniency = 15
-    radius = 25
+    bboxLeniency = 10
+    
+    # these are actually half the width and height of our bounding box thing
+    sizeY = 25 
+    sizeX = 15
     # width, height - note, these are the dimensions for when it is facing
     # north/south.
     attackSize = 200, 100
@@ -37,10 +40,10 @@ class Character(Sprite):
     
 
     def __init__(self, initPos=(350, 350)):
-        super(Character, self).__init__((initPos[x] - Character.radius,
-                                         initPos[y] - Character.radius,
-                                         initPos[x] + Character.radius,
-                                         initPos[y] + Character.radius),
+        super(Character, self).__init__((initPos[x] - Character.sizeX,
+                                         initPos[y] - Character.sizeY,
+                                         initPos[x] + Character.sizeX,
+                                         initPos[y] + Character.sizeY),
                                         self, location=initPos)
         
         self.velocity = 0, 0
@@ -74,31 +77,31 @@ class Character(Sprite):
         same form as the boundingBox used by Sprite - that is, left, top,
         right, bottom"""
         if self.direction == WEST:
-            return (self.location[x] - Character.radius -
+            return (self.location[x] - Character.sizeX -
                     Character.attackSize[y],
                     self.location[y] - Character.attackSize[x] / 2,
-                    self.location[x] - Character.radius,
+                    self.location[x] - Character.sizeX,
                     self.location[y] + Character.attackSize[x] / 2,)
             
         elif self.direction == NORTH:
             return (self.location[x] - Character.attackSize[x] / 2,
-                    self.location[y] - Character.radius -
+                    self.location[y] - Character.sizeY -
                     Character.attackSize[y],
                     self.location[x] + Character.attackSize[x] / 2,
-                    self.location[y] - Character.radius)
+                    self.location[y] - Character.sizeY)
             
         elif self.direction == EAST:
-            return (self.location[x] + Character.radius,
+            return (self.location[x] + Character.sizeX,
                     self.location[y] - Character.attackSize[x] / 2,
-                    self.location[x] + Character.radius +
+                    self.location[x] + Character.sizeX +
                     Character.attackSize[y],
                     self.location[y] + Character.attackSize[x] / 2)
 
         elif self.direction == SOUTH:
             return (self.location[x] - Character.attackSize[x] / 2,
-                    self.location[y] + Character.radius,
+                    self.location[y] + Character.sizeY,
                     self.location[x] + Character.attackSize[x] / 2,
-                    self.location[y] + Character.radius +
+                    self.location[y] + Character.sizeY +
                     Character.attackSize[y])
 
         
@@ -153,7 +156,7 @@ class Character(Sprite):
         #left, top, right, bottom = self.boundingBox
         #rect(left, top, 2*Character.radius, 2*Character.radius)
         
-        self.currentAnimation.display(x - Character.radius, y - Character.radius)
+        self.currentAnimation.display(x - Character.sizeX, y - Character.sizeY)
         if not self.moving:
             self.currentAnimation = self.animations[Character.IDLE]
         else:
