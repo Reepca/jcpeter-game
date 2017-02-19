@@ -52,6 +52,11 @@ class Character(Sprite):
         self.maxHealth = 100
         self.currentHealth = 100
         self.moving = False
+        
+        # Adjust hitbox to fit animation size
+        left, top, right, bottom = self.boundingBox
+        self.boundingBox = (left + Character.sizeX/2, top, right + Character.sizeX/2, bottom)
+        
         self.playerAni = Animation(Character.playerAniPrefix,
                                    Character.playerAniType,
                                    Character.playerNumFrames,
@@ -153,14 +158,18 @@ class Character(Sprite):
 
     def draw(self, x, y):
         # these commented out lines draw the bounding box of the character.
-        #left, top, right, bottom = self.boundingBox
-        #rect(left, top, 2*Character.radius, 2*Character.radius)
+        left, top, right, bottom = self.boundingBox
+        rect(left, top, 2*Character.sizeX, 2*Character.sizeY)
         
-        self.currentAnimation.display(x - Character.sizeX, y - Character.sizeY)
+        if self.velocity[0] >= 0:
+            self.currentAnimation.display(x - Character.sizeX, y - Character.sizeY)
+        else:
+            self.currentAnimation.flipXDisplay(x - Character.sizeX, y - Character.sizeY)
+        
         if not self.moving:
             self.currentAnimation = self.animations[Character.IDLE]
         else:
-            self.currentAnimation = self.animations[Character.WALKING]
+                self.currentAnimation = self.animations[Character.WALKING]
 
         # Drawing the attack box just to give us an idea of what it's like
         if self.isAttacking():

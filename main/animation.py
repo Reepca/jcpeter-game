@@ -25,8 +25,8 @@ class Animation(object):
     def flipXDisplay(self, x, y):
         pushMatrix()
         scale(-1.0, 1.0)
-        image(self.images[self.currentFrame], -self.images[self.currentFrame].width, 0);
-        popMatrix
+        image(self.images[self.currentFrame], -x - self.images[self.currentFrame].width, y);
+        popMatrix()
         self.__updateFrame()
             
     def __updateFrame(self):
