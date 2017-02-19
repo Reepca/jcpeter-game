@@ -36,10 +36,10 @@ class Animation(object):
             self.time = timeAtDisplay
     
     def getWidth(self):
-        return self.images[0].width
+        return self.images[self.currentFrame].width
     
     def getHeight(self):
-        return self.images[0].height
+        return self.images[self.currentFrame].height
     
     def pause(self):
         self.tempRate = self.displayRate

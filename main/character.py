@@ -66,7 +66,7 @@ class Character(Sprite):
                                        Character.playerJumpNumFrames,
                                        10)
         self.animations = [self.playerAni, self.playerWalkAni, self.playerAttackAni, self.playerJumpAni]
-        self.currentAnimation = self.animations[IDLE]
+        self.currentAnimation = self.animations[Character.IDLE]
         Sprite.autoMoveSprites.append(self)
 
     def attackBox(self):
@@ -106,29 +106,31 @@ class Character(Sprite):
     def isAttacking(self):
         return __main__.key_states.get(' ')
 
+
     def triggerDoorToggle(self):
         # Remember how you gave Sprite a boundingBox attribute?
         for door in Room.currentRoom.doors:
-            
-            if(boundBoxCheck(self.boundingBox, door.boundingBox)):
-                print door
-                door.toggleOpen()
-                # if a room exists past the door you're trying to enter
-                if Room.currentRoom.adjRooms[door.direction] != None:
-                    Room.currentRoom.adjRooms[door.direction].enter(opposite(door.direction))
-                    
-                    # adjust player position so they are by the door they just opened
-                    print "currentRoom: ", Room.currentRoom
-                    print "Door Direction: ", door.direction
-                    if door.direction == EAST:
-                        self.move(-self.location[x] + Door.westDoorOpen.width, 0)
-                    elif door.direction == SOUTH:
-                        self.move(0, -self.location[y] + Door.northDoorOpen.height)
-                    elif door.direction == NORTH:
-                        self.move(0, -self.location[y] + height - Door.southDoorOpen.height)
-                    elif door.direction == WEST:
-                        self.move(-self.location[x] + width - Door.eastDoorOpen.width, 0) 
-                return
+            if door:        
+                if(boundBoxCheck(self.boundingBox, door.boundingBox)):
+                    print door
+                    door.toggleOpen()
+                    # if a room exists past the door you're trying to enter
+                    if Room.currentRoom.adjRooms[door.direction] != None:
+                        Room.currentRoom.adjRooms[door.direction].enter(opposite(door.direction))
+                        
+                        # adjust player position so they are by the door they just opened
+                        print "currentRoom: ", Room.currentRoom
+                        print "Door Direction: ", door.direction
+                        if door.direction == EAST:
+                            self.move(-self.location[x] + Door.westDoorOpen.width + self.currentAnimation.getWidth() / 2, 0)
+                        elif door.direction == SOUTH:
+                            self.move(0, -self.location[y] + Door.northDoorOpen.height + self.currentAnimation.getHeight() / 2)
+                        elif door.direction == NORTH:
+                            self.move(0, -self.location[y] + height - Door.southDoorOpen.height - self.currentAnimation.getHeight() / 2)
+                        elif door.direction == WEST:
+                            self.move(-self.location[x] + width - Door.eastDoorOpen.width - self.currentAnimation.getWidth() / 2, 0) 
+                    return
+
 
     def setWalkY(self, flag):
         if flag is None:
@@ -137,6 +139,7 @@ class Character(Sprite):
             self.velocity = self.velocity[x], directionSigns[flag] * self.speed
             self.direction = flag
 
+
     def setWalkX(self, flag):
         if flag is None:
             self.velocity = 0, self.velocity[y]
@@ -144,25 +147,22 @@ class Character(Sprite):
             self.velocity = directionSigns[flag] * self.speed, self.velocity[y]
             self.direction = flag
 
+
     def draw(self, x, y):
         # these commented out lines draw the bounding box of the character.
         #left, top, right, bottom = self.boundingBox
         #rect(left, top, 2*Character.radius, 2*Character.radius)
         
-        self.currentAnimation.display(x - Character.radius, y - Character.radius
+        self.currentAnimation.display(x - Character.radius, y - Character.radius)
         if not self.moving:
-            self.currentAnimation = self.animations[IDLE]
-            
-            
+            self.currentAnimation = self.animations[Character.IDLE]
         else:
-            self.currentAnimation = self.animations[WALKING]
-            
+            self.currentAnimation = self.animations[Character.WALKING]
 
-            
-            
         # Drawing the attack box just to give us an idea of what it's like
         if self.isAttacking():
             left, top, right, bottom = self.attackBox()
+
 
     def updatePosition(self, timePassed):
         dx = self.velocity[x] * timePassed
