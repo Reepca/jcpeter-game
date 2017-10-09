@@ -16,8 +16,10 @@ class Dungeon(object):
         
         self.generateDungeon(roomCount)
         
-        # notice that rooms[2] and rooms[3] should connect, this is what linkRooms and 
-        # the gridCoords are for.
+        print Room.currentRoom.adjRooms
+        for room in Room.currentRoom.adjRooms:
+            if room:
+                print room.roomId
         
             
     def generateDungeon(self, roomCount):
@@ -34,13 +36,8 @@ class Dungeon(object):
             roomType = r.randint(Room.START, Room.END)
             # random direction (0-3)
             roomDir = r.randint(WEST, SOUTH)
-            if(self.addRoom(self.rooms[chosenRoom], roomType, roomDir)):
-                room = r.randint(0, len(self.rooms) - 2)
-                xPos = r.randint(Room.currentRoom.boundingBox[0] + Key.keyImg.width/2,
-                                 Room.currentRoom.boundingBox[2] - Key.keyImg.width/2)
-                yPos = r.randint(Room.currentRoom.boundingBox[1] + Key.keyImg.width/2,
-                                 Room.currentRoom.boundingBox[3] - Key.keyImg.width/2)
-                Dungeon.floorKeys.append(Key(xPos, yPos, self.rooms[room]))
+            self.addRoom(self.rooms[chosenRoom], roomType, roomDir)
+                
                 
     
             
@@ -79,6 +76,17 @@ class Dungeon(object):
                 adjRoom.adjRooms[direction] = newRoom
                 newRoom.adjRooms[opposite(direction)] = adjRoom
             
+            newRoom.roomId = len(Dungeon.floorKeys)
+            room = r.randint(0, len(self.rooms) - 1)
+            xPos = r.randint(Room.currentRoom.boundingBox[0] + Key.keyImg.width/2,
+                            Room.currentRoom.boundingBox[2] - Key.keyImg.width/2)
+            yPos = r.randint(Room.currentRoom.boundingBox[1] + Key.keyImg.width/2,
+                            Room.currentRoom.boundingBox[3] - Key.keyImg.width/2)
+            newKey = Key(xPos, yPos, self.rooms[room])
+            newRoom.rightKey = newKey
+            
+            print "Made room ", newRoom.roomId
+            Dungeon.floorKeys.append(newKey)
             self.rooms.append(newRoom)
             self.linkRooms(newRoom)
         

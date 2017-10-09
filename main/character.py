@@ -132,10 +132,9 @@ class Character(Sprite):
         for door in Room.currentRoom.doors:
             if door:        
                 if(boundBoxCheck(self.boundingBox, door.boundingBox)):
-                    print door
                     door.toggleOpen()
                     # if a room exists past the door you're trying to enter
-                    if Room.currentRoom.adjRooms[door.direction] != None:
+                    if Room.currentRoom.adjRooms[door.direction] != None and (self.inventory.contains(Room.currentRoom.adjRooms[door.direction].rightKey) or Room.currentRoom.adjRooms[door.direction].roomId < 0):
                         Room.currentRoom.adjRooms[door.direction].enter(opposite(door.direction))
                         
                         # adjust player position so they are by the door they just opened

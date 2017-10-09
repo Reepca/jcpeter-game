@@ -10,6 +10,7 @@ class Inventory(jArray):
     slotSize = 0
     rowCount = 0
     colCount = 0
+    textHeight = 14
     
     def __init__(self, capacity=30, startItems=[None for i in range(30)]):
         super(Inventory, self).__init__(capacity)
@@ -32,6 +33,11 @@ class Inventory(jArray):
         self.updateFullStatus()
         print "added ", newThing
         
+    
+    def contains(self, thing):
+        print "Inventory has", thing.name, ":", True if self.data.count(thing) > 0 else False
+        return True if self.data.count(thing) > 0 else False
+    
         
     def updateFullStatus(self):
         self.fullInventory = True if self.firstEmpty >= self.capacity or self.firstEmpty < 0 else False
@@ -39,16 +45,18 @@ class Inventory(jArray):
         
     def draw(self, drawCoord=(0,0)):
         image(Inventory.inventoryImage, drawCoord[x], drawCoord[y])
-        
+        textSize(Inventory.textHeight)
         imageMode(CENTER)
         for i in range(self.capacity):
-            print i
             # silly, but this needs a property named "inventoryImage"
             if self.data[i] != None:
                 image(self.data[i].inventoryImage, drawCoord[x] + self.inventoryMap[i][x] + Inventory.slotSize/2, drawCoord[y] + self.inventoryMap[i][y] + Inventory.slotSize/2)
-            fill(0)
-            text(str(i), drawCoord[x] + self.inventoryMap[i][x] - Inventory.betweenSlots[x]/2, drawCoord[y] + self.inventoryMap[i][y])
+                
+                text(self.data[i].name, drawCoord[x] + self.inventoryMap[i][x], drawCoord[y] + self.inventoryMap[i][y])
+            # put inventory slot number to left of slot
+            text(str(i), drawCoord[x] + self.inventoryMap[i][x] - Inventory.betweenSlots[x]/2, drawCoord[y] + self.inventoryMap[i][y] + Inventory.slotSize/2)
         imageMode(CORNER)
+        
             
 
 def getSlotSizeScale(img):

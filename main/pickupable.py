@@ -8,3 +8,6 @@ class Pickupable(object):
         
     def inventoryImage(self):
         raise NotImplementedError
+        
+    def getItemName(self):
+        raise NotImplementedError

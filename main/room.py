@@ -81,7 +81,6 @@ class Room(Sprite):
 
     def __init__(self, enterDirection=NO_DIR, type=START, doors=None, gridCoord=[None, None], currentRoom=False):
         """ """
-        print "Room made"
         if doors:
             self.doors = doors
         else:
@@ -101,6 +100,9 @@ class Room(Sprite):
         self.adjRooms = [None, None, None, None]
         self.type = type
         self.enterDirection = enterDirection
+        self.rightKey = None
+        self.roomId = -1
+
 
     def enter(self, enterDirection):
         # enter a room from a direction 
@@ -129,7 +131,9 @@ class Room(Sprite):
             elif Room.currentRoom.type == Room.END:
                 drawImg = Room.endRoom
             image(drawImg, 0, 0)
-    
+            textAlign(CENTER)
+            text("Room " + str(self.roomId), (self.boundingBox[2]-self.boundingBox[0])/2, (self.boundingBox[3]-self.boundingBox[1])/2)
+            textAlign(CORNER)
             for door in self.doors:
                 door.drawSprite()
         
@@ -139,6 +143,7 @@ class Room(Sprite):
         """ """
         print "Door direction updated:: ", direction
         self.doors[direction].state = state
+
 
     def toggleDoor(self, direction):
         print "Door direction toggled:: ", direction
