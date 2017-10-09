@@ -1,6 +1,8 @@
 from util import NO_DIR, WEST, EAST, SOUTH, NORTH, x, y, AJAR, CLOSED, opposite
 from room import Door
 from room import Room
+from jkey import Key
+import random as r
 
 class Dungeon(object):
     def __init__(self, roomCount):
@@ -8,24 +10,40 @@ class Dungeon(object):
 
         # list of all rooms in dungeon.. maybe restructure this later
         self.rooms = []
+        self.roomKeys = []
         
-        # initial start room creation
-        self.rooms.append(Room(gridCoord=[0, 0], currentRoom=True))
-        
-        # this enter is actually not needed, but i'm going to keep it around just in case
-        #self.rooms[0].enter(NO_DIR)
-        
-        # add two rooms
-        self.addRoom(Room.currentRoom, Room.PUZZLE, EAST)
-        self.addRoom(self.rooms[1], Room.END, SOUTH)
-        self.addRoom(self.rooms[0], Room.PUZZLE, SOUTH)
+        self.generateDungeon(roomCount)
         
         # notice that rooms[2] and rooms[3] should connect, this is what linkRooms and 
         # the gridCoords are for.
         
             
+    def generateDungeon(self, roomCount):
+        """ """
+        print "Generating Dungeon"
+        # initial start room creation
+        self.rooms.append(Room(gridCoord=[0, 0], currentRoom=True))
+        
+        # populate rooms list
+        while len(self.rooms) != roomCount:
+            # random existing room to add on to (0-len(rooms[]-1))
+            chosenRoom = r.randint(0, len(self.rooms) - 1)
+            # random room type (0-4)
+            roomType = r.randint(Room.START, Room.END)
+            # random direction (0-3)
+            roomDir = r.randint(WEST, SOUTH)
+            if(self.addRoom(self.rooms[chosenRoom], roomType, roomDir)):
+                room = r.randint(0, len(self.rooms) - 2)
+                xPos = r.randint(Room.currentRoom.boundingBox[0] + Key.keyImg.width/2,
+                                 Room.currentRoom.boundingBox[2] - Key.keyImg.width/2)
+                yPos = r.randint(Room.currentRoom.boundingBox[1] + Key.keyImg.width/2,
+                                 Room.currentRoom.boundingBox[3] - Key.keyImg.width/2)
+                self.roomKeys.append(Key(xPos, yPos, self.rooms[room]))
+                
+    
+            
     def addRoom(self, adjRoom, type, direction=NO_DIR):
-        print "Add Room Called"
+        # print "Add Room Called"
         # assign the room new coords relative to the adjacent room 
         gridCoord = [0, 0]
         # if the new room is to the west of adjRoom
@@ -62,6 +80,8 @@ class Dungeon(object):
             self.rooms.append(newRoom)
             self.linkRooms(newRoom)
         
+        return True if not alreadyExists else False
+        
     def linkRooms(self, linkRoom):
         """ """
         for room in self.rooms:
@@ -84,3 +104,4 @@ class Dungeon(object):
                 elif room.gridCoord[x] == linkRoom.gridCoord[x] + 1:
                     room.adjRooms[WEST] = linkRoom
                     linkRoom.adjRooms[EAST] = room
+                    

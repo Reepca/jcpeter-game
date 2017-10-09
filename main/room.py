@@ -76,6 +76,7 @@ class Room(Sprite):
     # Room images
     startRoom = None
     puzzleRoom = None
+    battleRoom = None
     endRoom = None
 
     def __init__(self, enterDirection=NO_DIR, type=START, doors=None, gridCoord=[None, None], currentRoom=False):
@@ -121,12 +122,18 @@ class Room(Sprite):
                 drawImg = Room.startRoom
             elif Room.currentRoom.type == Room.PUZZLE:
                 drawImg = Room.puzzleRoom
+            elif Room.currentRoom.type == Room.BATTLE:
+                drawImg = Room.battleRoom
+            elif Room.currentRoom.type == Room.EMPTY:
+                drawImg = Room.startRoom
             elif Room.currentRoom.type == Room.END:
                 drawImg = Room.endRoom
             image(drawImg, 0, 0)
     
             for door in self.doors:
                 door.drawSprite()
+        
+    
 
     def updateDoor(self, direction, state):
         """ """
@@ -139,10 +146,11 @@ class Room(Sprite):
 
 
     def setWallBounds(self):
-        self.wallBounds[WEST] = Door.eastDoorOpen.width
+        self.wallBounds[WEST] = Door.westDoorOpen.width
         self.wallBounds[NORTH] = Door.southDoorOpen.height
-        self.wallBounds[EAST] = Door.westDoorOpen.width
+        self.wallBounds[EAST] = Door.eastDoorOpen.width
         self.wallBounds[SOUTH] = Door.southDoorOpen.height
+        
 
 def initDoor():
     Door.northDoorOpen = loadImage("northDoorOpen.png")
@@ -180,5 +188,6 @@ def initRoom():
         time."""
         Room.startRoom = loadImage("startRoom.png")
         Room.puzzleRoom = loadImage("puzzleRoom.png")
+        Room.battleRoom = loadImage("battleRoom.png")
         Room.endRoom = loadImage("endRoom.png")
         initDoor()

@@ -3,11 +3,12 @@
 # https://processing.org/examples/animatedsprite.html
 class Animation(object):
     
-    def __init__(self, prefix, type, numFrames, displayRate):
+    def __init__(self, prefix, type, numFrames, displayRate=30):
         self.prefix = prefix
         self.type = type
         self.numFrames = numFrames
         self.displayRate = displayRate
+        self.tempRate = 0
         self.currentFrame = 0
         self.time = millis()
         
@@ -19,13 +20,30 @@ class Animation(object):
             
     def display(self, x, y):
         image(self.images[self.currentFrame], x, y)
+        self.__updateFrame()
+            
+    def flipXDisplay(self, x, y):
+        pushMatrix()
+        scale(-1.0, 1.0)
+        image(self.images[self.currentFrame], -x - self.images[self.currentFrame].width, y);
+        popMatrix()
+        self.__updateFrame()
+            
+    def __updateFrame(self):
         timeAtDisplay = millis()
         if timeAtDisplay - self.time > 1000 / self.displayRate:
             self.currentFrame = (self.currentFrame + 1) % self.numFrames
             self.time = timeAtDisplay
-            
+    
     def getWidth(self):
-        return self.images[0].width
+        return self.images[self.currentFrame].width
     
     def getHeight(self):
-        return self.images[0].height
+        return self.images[self.currentFrame].height
+    
+    def pause(self):
+        self.tempRate = self.displayRate
+        self.displayRate = 1
+        
+    def resume(self):
+        self.displayRate = self.tempRate
