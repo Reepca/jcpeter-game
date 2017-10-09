@@ -17,7 +17,7 @@ from util import NO_DIR, NORTH, WEST, EAST, SOUTH, CLOSED, AJAR
 key_states = dict()
 timeOfLastUpdate = millis()
 player = None
-level1 = None
+currentLevel = None
 
 def setup():
     size(800, 800)
@@ -26,8 +26,8 @@ def setup():
     # either.
     # Ugly hack
     initializeImages()
-    global player, level1
-    level1 = dungeon.Dungeon(10)
+    global player, currentLevel
+    currentLevel = dungeon.Dungeon(10)
     player = character.Character()
     
 

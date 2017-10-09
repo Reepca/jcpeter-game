@@ -5,12 +5,14 @@ from jkey import Key
 import random as r
 
 class Dungeon(object):
+    
+    floorKeys = []
+    
     def __init__(self, roomCount):
         self.roomCount = roomCount
 
         # list of all rooms in dungeon.. maybe restructure this later
         self.rooms = []
-        self.roomKeys = []
         
         self.generateDungeon(roomCount)
         
@@ -38,7 +40,7 @@ class Dungeon(object):
                                  Room.currentRoom.boundingBox[2] - Key.keyImg.width/2)
                 yPos = r.randint(Room.currentRoom.boundingBox[1] + Key.keyImg.width/2,
                                  Room.currentRoom.boundingBox[3] - Key.keyImg.width/2)
-                self.roomKeys.append(Key(xPos, yPos, self.rooms[room]))
+                Dungeon.floorKeys.append(Key(xPos, yPos, self.rooms[room]))
                 
     
             

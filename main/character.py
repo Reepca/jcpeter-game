@@ -3,6 +3,7 @@ from room import Door
 from sprite import Sprite
 from animation import Animation
 from inventory import Inventory
+from dungeon import Dungeon
 from util import x, y, NO_DIR, WEST, EAST, NORTH, SOUTH, directionSigns, boundBoxCheck, opposite, inZone
 import __main__
 
@@ -170,6 +171,7 @@ class Character(Sprite):
     def draw(self, x, y):
         # these commented out lines draw the bounding box of the character..
         left, top, right, bottom = self.boundingBox
+        #fill(0, 255, 0)
         #rect(left, top, 2*Character.sizeX, 2*Character.sizeY)
         
         if self.velocity[0] >= 0:
@@ -208,6 +210,12 @@ class Character(Sprite):
         else:
             self.moving = False
             
+        for jkey in Dungeon.floorKeys:
+            if (not jkey.pickedUp and Room.currentRoom == jkey.roomWithKey and boundBoxCheck((futureLeft, futureTop, futureRight, futureBottom), jkey.boundingBox)):
+                jkey.pickUp(self)
+                print "Picked up jkey ", jkey.id
+            
+            
         if inZone((futureLeft, top, futureRight, bottom), Room.currentRoom.boundingBox):
             if inZone((futureLeft, futureTop, futureRight, futureBottom), Room.currentRoom.boundingBox):
                 self.move(dx, dy)
@@ -215,7 +223,8 @@ class Character(Sprite):
                 self.move(dx, 0)
         elif inZone((left, futureTop, right, futureBottom), Room.currentRoom.boundingBox):
             self.move(0, dy)
-
+            
+        
 
 def updatePositions(timePassed):
     for sprite in Sprite.autoMoveSprites:
