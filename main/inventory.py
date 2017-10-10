@@ -25,13 +25,17 @@ class Inventory(jArray):
         
     def insert(self, newThing):
         self.data[self.firstEmpty] = newThing
+        successStatus = True
         try:
             self.firstEmpty = self.data.index(None)
         except ValueError:
+            successStatus = False
             print "Can't insert item into inventory; Inventory is full"
             self.firstEmpty = -1
         self.updateFullStatus()
         print "added ", newThing
+        return successStatus
+        
         
     
     def contains(self, thing):

@@ -99,6 +99,7 @@ def update(timePassed):
 
     
 def initializeImages():
+    room.initDoor()
     room.initRoom()
     jkey.initKey()
     inventory.initInventory()

@@ -26,8 +26,8 @@ class Key(Sprite, Pickupable):
         
         
     def pickUp(self, character):
-        self.pickedUp = True
-        character.inventory.insert(self)
+        if(character.inventory.insert(self)):
+            self.pickedUp = True
         
         
     def draw(self, x, y):

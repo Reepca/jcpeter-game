@@ -33,7 +33,7 @@ class Dungeon(object):
             # random existing room to add on to (0-len(rooms[]-1))
             chosenRoom = r.randint(0, len(self.rooms) - 1)
             # random room type (0-4)
-            roomType = r.randint(Room.START, Room.END)
+            roomType = Room.END if len(self.rooms) + 1 == roomCount else r.randint(Room.START, Room.EMPTY) 
             # random direction (0-3)
             roomDir = r.randint(WEST, SOUTH)
             self.addRoom(self.rooms[chosenRoom], roomType, roomDir)
@@ -69,8 +69,9 @@ class Dungeon(object):
         
         if not alreadyExists:
             # make the room
-            newRoom = Room(direction, type, None, gridCoord)
-        
+            newRoom = Room(direction, type, [None, None, None, None], gridCoord)
+            newRoom.doors[opposite(direction)] = Door(opposite(direction))
+            adjRoom.doors[direction] = Door(direction)
             # update pointers
             if direction != NO_DIR:
                 adjRoom.adjRooms[direction] = newRoom

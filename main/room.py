@@ -17,6 +17,7 @@ class Door(Sprite):
     doorZones = []
 
     def __init__(self, direction, initState=CLOSED):
+        print Door.doorZones
         super(Door, self).__init__(Door.doorZones[direction], self,
                                    manageInSprite=False)
         self.state = initState
@@ -79,13 +80,9 @@ class Room(Sprite):
     battleRoom = None
     endRoom = None
 
-    def __init__(self, enterDirection=NO_DIR, type=START, doors=None, gridCoord=[None, None], currentRoom=False):
+    def __init__(self, enterDirection=NO_DIR, type=START, doors=[None, None, None, None], gridCoord=[None, None], currentRoom=False):
         """ """
-        if doors:
-            self.doors = doors
-        else:
-            self.doors = [Door(WEST), Door(NORTH), Door(EAST), Door(SOUTH)]
-               
+        self.doors = doors
         
         super(Room, self).__init__((Room.wallDepth,
                                     Room.wallDepth, width - Room.wallDepth,
@@ -132,10 +129,22 @@ class Room(Sprite):
                 drawImg = Room.endRoom
             image(drawImg, 0, 0)
             textAlign(CENTER)
-            text("Room " + str(self.roomId), (self.boundingBox[2]-self.boundingBox[0])/2, (self.boundingBox[3]-self.boundingBox[1])/2)
-            textAlign(CORNER)
+            text("Room " + str(self.roomId), (self.boundingBox[2]+self.boundingBox[0])/2, (self.boundingBox[3]+self.boundingBox[1])/2)
+            
             for door in self.doors:
-                door.drawSprite()
+                if door:
+                    door.drawSprite()
+                    
+                    if door.direction == WEST:
+                        text("Room " + str(Room.currentRoom.adjRooms[WEST].roomId), door.boundingBox[EAST] + 20, (door.boundingBox[SOUTH] + door.boundingBox[NORTH]) / 2)
+                    elif door.direction == NORTH:
+                        text("Room " + str(Room.currentRoom.adjRooms[NORTH].roomId), (door.boundingBox[EAST] + door.boundingBox[WEST]) / 2, door.boundingBox[SOUTH] + 20)
+                    elif door.direction == EAST:
+                        text("Room " + str(Room.currentRoom.adjRooms[EAST].roomId), door.boundingBox[WEST] - 20, (door.boundingBox[SOUTH] + door.boundingBox[NORTH]) / 2)
+                    elif door.direction == SOUTH:
+                        text("Room " + str(Room.currentRoom.adjRooms[SOUTH].roomId), (door.boundingBox[EAST] + door.boundingBox[WEST])/2, door.boundingBox[NORTH] - 20)
+                                     
+            textAlign(CORNER)
         
     
 
@@ -195,4 +204,3 @@ def initRoom():
         Room.puzzleRoom = loadImage("puzzleRoom.png")
         Room.battleRoom = loadImage("battleRoom.png")
         Room.endRoom = loadImage("endRoom.png")
-        initDoor()
