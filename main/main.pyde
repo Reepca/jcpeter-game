@@ -11,13 +11,15 @@ import room
 import dungeon
 import jkey
 import inventory
+from game import Game
 from util import NO_DIR, NORTH, WEST, EAST, SOUTH, CLOSED, AJAR
 
 # Ugly globals
 key_states = dict()
 timeOfLastUpdate = millis()
+ourGame = None
 player = None
-currentLevel = None
+levelsPassed = 0
 
 def setup():
     size(800, 800)
@@ -26,8 +28,10 @@ def setup():
     # either.
     # Ugly hack
     initializeImages()
-    global player, currentLevel
-    currentLevel = dungeon.Dungeon(10)
+    global player, ourGame
+    ourGame = Game()
+    
+    #currentLevel = dungeon.Dungeon(10)
     player = character.Character()
     
 
@@ -96,6 +100,9 @@ def update(timePassed):
     """timePassed is the amount of time passed since last update (in
     milliseconds)"""
     character.updatePositions(timePassed)
+    
+    if Game.victoryCount != levelsPassed:
+        ourGame.nextLevel()
 
     
 def initializeImages():

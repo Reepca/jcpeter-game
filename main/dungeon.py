@@ -1,6 +1,5 @@
 from util import NO_DIR, WEST, EAST, SOUTH, NORTH, x, y, AJAR, CLOSED, opposite
-from room import Door
-from room import Room
+from room import Room, Door
 from jkey import Key
 import random as r
 
@@ -116,3 +115,5 @@ class Dungeon(object):
                     room.adjRooms[WEST] = linkRoom
                     linkRoom.adjRooms[EAST] = room
                     
+    def destroyDungeon(self):
+        self = None

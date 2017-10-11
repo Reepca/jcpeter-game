@@ -4,6 +4,7 @@ from sprite import Sprite
 from animation import Animation
 from inventory import Inventory
 from dungeon import Dungeon
+from game import Game
 from util import x, y, NO_DIR, WEST, EAST, NORTH, SOUTH, directionSigns, boundBoxCheck, opposite, inZone
 import __main__
 
@@ -137,7 +138,8 @@ class Character(Sprite):
                     if roomPastDoor != None and (roomPastDoor.rightKey is None or self.inventory.contains(roomPastDoor.rightKey) or roomPastDoor.roomId < 0):
                         door.toggleOpen()
                         Room.currentRoom.adjRooms[door.direction].enter(opposite(door.direction))
-                        
+                        if Room.currentRoom.type == Room.END:
+                            Game.victoryCount += 1
                         # adjust player position so they are by the door they just opened
                         print "currentRoom: ", Room.currentRoom
                         print "Door Direction: ", door.direction
