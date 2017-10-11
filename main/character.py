@@ -138,6 +138,8 @@ class Character(Sprite):
                     if roomPastDoor != None and (roomPastDoor.rightKey is None or self.inventory.contains(roomPastDoor.rightKey) or roomPastDoor.roomId < 0):
                         door.toggleOpen()
                         Room.currentRoom.adjRooms[door.direction].enter(opposite(door.direction))
+                        
+                        # current win condition is entering the last room
                         if Room.currentRoom.type == Room.END:
                             Game.victoryCount += 1
                         # adjust player position so they are by the door they just opened

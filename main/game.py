@@ -1,6 +1,6 @@
 from dungeon import Dungeon
 from jkey import Key
-from room import Room
+from room import Room, Door
 from sprite import Sprite
 
 class Game(object):
@@ -10,6 +10,7 @@ class Game(object):
         self.sizeScale = sizeScale
         self.levelCount = levelCount
         self.currentDungeon = Dungeon(startSize)
+        Door.level = Game.victoryCount
         
     def pause():
         pass
@@ -17,8 +18,9 @@ class Game(object):
     def nextLevel(self):
         if Game.victoryCount <= self.levelCount:
             self.clearClassVars()
+            Door.level = Game.victoryCount
             self.currentDungeon = Dungeon(self.startSize + self.sizeScale * Game.victoryCount)
-            print Room.currentRoom.doors
+            print 'Current Level: ', Game.victoryCount
             
             
     def clearClassVars(self):
