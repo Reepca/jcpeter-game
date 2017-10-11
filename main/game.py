@@ -1,4 +1,7 @@
-import dungeon
+from dungeon import Dungeon
+from jkey import Key
+from room import Room
+from sprite import Sprite
 
 class Game(object):
     victoryCount = 0
@@ -6,12 +9,21 @@ class Game(object):
         self.startSize = startSize
         self.sizeScale = sizeScale
         self.levelCount = levelCount
-        self.currentDungeon = dungeon.Dungeon(startSize)
+        self.currentDungeon = Dungeon(startSize)
         
     def pause():
         pass
         
     def nextLevel(self):
-        self.currentDungeon.destroyDungeon()
         if Game.victoryCount <= self.levelCount:
-            self.currentDungeon = dungeon.Dungeon(self.startSize + sizeScale * Game.victoryCount)
+            self.clearClassVars()
+            self.currentDungeon = Dungeon(self.startSize + self.sizeScale * Game.victoryCount)
+            print Room.currentRoom.doors
+            
+            
+    def clearClassVars(self):
+        Sprite.allSprites = []
+        Sprite.autoMoveSprites = []
+        Key.keyCount = 0
+        Dungeon.floorKeys = []
+        Room.currentRoom = None

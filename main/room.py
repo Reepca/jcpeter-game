@@ -17,7 +17,6 @@ class Door(Sprite):
     doorZones = []
 
     def __init__(self, direction, initState=CLOSED):
-        print Door.doorZones
         super(Door, self).__init__(Door.doorZones[direction], self,
                                    manageInSprite=False)
         self.state = initState
@@ -106,7 +105,7 @@ class Room(Sprite):
         self.enterDirection = enterDirection
         Room.currentRoom = self
         print "adjRooms: ", self.adjRooms
-        if enterDirection != NO_DIR:
+        if enterDirection != NO_DIR and self.doors[enterDirection] != None:
             self.doors[enterDirection].state = AJAR
             if self.adjRooms[enterDirection] != None:
                 self.adjRooms[enterDirection].doors[opposite(enterDirection)].state = AJAR
@@ -134,14 +133,13 @@ class Room(Sprite):
             for door in self.doors:
                 if door:
                     door.drawSprite()
-                    
-                    if door.direction == WEST:
+                    if door.direction == WEST and Room.currentRoom.adjRooms[WEST] != None:
                         text("Room " + str(Room.currentRoom.adjRooms[WEST].roomId), door.boundingBox[EAST] + 20, (door.boundingBox[SOUTH] + door.boundingBox[NORTH]) / 2)
-                    elif door.direction == NORTH:
+                    elif door.direction == NORTH and Room.currentRoom.adjRooms[NORTH] != None:
                         text("Room " + str(Room.currentRoom.adjRooms[NORTH].roomId), (door.boundingBox[EAST] + door.boundingBox[WEST]) / 2, door.boundingBox[SOUTH] + 20)
-                    elif door.direction == EAST:
+                    elif door.direction == EAST and Room.currentRoom.adjRooms[EAST] != None:
                         text("Room " + str(Room.currentRoom.adjRooms[EAST].roomId), door.boundingBox[WEST] - 20, (door.boundingBox[SOUTH] + door.boundingBox[NORTH]) / 2)
-                    elif door.direction == SOUTH:
+                    elif door.direction == SOUTH and Room.currentRoom.adjRooms[SOUTH] != None:
                         text("Room " + str(Room.currentRoom.adjRooms[SOUTH].roomId), (door.boundingBox[EAST] + door.boundingBox[WEST])/2, door.boundingBox[NORTH] - 20)
                                      
             textAlign(CORNER)

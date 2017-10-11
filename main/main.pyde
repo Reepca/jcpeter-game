@@ -29,7 +29,7 @@ def setup():
     # Ugly hack
     initializeImages()
     global player, ourGame
-    ourGame = Game()
+    ourGame = Game(startSize=2, sizeScale=1, levelCount=4)
     
     #currentLevel = dungeon.Dungeon(10)
     player = character.Character()
@@ -101,8 +101,11 @@ def update(timePassed):
     milliseconds)"""
     character.updatePositions(timePassed)
     
+    global levelsPassed, player
     if Game.victoryCount != levelsPassed:
         ourGame.nextLevel()
+        player = character.Character()
+        levelsPassed += 1
 
     
 def initializeImages():

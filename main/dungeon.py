@@ -115,5 +115,3 @@ class Dungeon(object):
                     room.adjRooms[WEST] = linkRoom
                     linkRoom.adjRooms[EAST] = room
                     
-    def destroyDungeon(self):
-        self = None
