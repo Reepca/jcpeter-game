@@ -82,10 +82,14 @@ class Room(Sprite):
     battleRoom = None
     endRoom = None
 
-    def __init__(self, enterDirection=NO_DIR, type=START, doors=[None, None, None, None], gridCoord=[None, None], currentRoom=False):
+    def __init__(self, enterDirection=NO_DIR, type=START, doors=None, gridCoord=[None, None], currentRoom=False):
         """ """
-        self.doors = doors
-        
+        # DON'T GET RID OF THIS, IDIOT butt
+        if doors != None:
+            self.doors = doors
+        else:
+            self.doors = [None, None, None, None]
+            
         super(Room, self).__init__((Room.wallDepth,
                                     Room.wallDepth, width - Room.wallDepth,
                                     height - Room.wallDepth),
@@ -137,13 +141,13 @@ class Room(Sprite):
                 if door:
                     door.drawSprite()
                     if door.direction == WEST and Room.currentRoom.adjRooms[WEST] != None:
-                        text("Room " + str(Room.currentRoom.adjRooms[WEST].roomId) + " lvl " + str(door.level), door.boundingBox[EAST] + 20, (door.boundingBox[SOUTH] + door.boundingBox[NORTH]) / 2)
+                        text("Room " + str(Room.currentRoom.adjRooms[WEST].roomId), door.boundingBox[EAST] + 20, (door.boundingBox[SOUTH] + door.boundingBox[NORTH]) / 2)
                     elif door.direction == NORTH and Room.currentRoom.adjRooms[NORTH] != None:
-                        text("Room " + str(Room.currentRoom.adjRooms[NORTH].roomId) + " lvl " + str(door.level), (door.boundingBox[EAST] + door.boundingBox[WEST]) / 2, door.boundingBox[SOUTH] + 20)
+                        text("Room " + str(Room.currentRoom.adjRooms[NORTH].roomId), (door.boundingBox[EAST] + door.boundingBox[WEST]) / 2, door.boundingBox[SOUTH] + 20)
                     elif door.direction == EAST and Room.currentRoom.adjRooms[EAST] != None:
-                        text("Room " + str(Room.currentRoom.adjRooms[EAST].roomId) + " lvl " + str(door.level), door.boundingBox[WEST] - 20, (door.boundingBox[SOUTH] + door.boundingBox[NORTH]) / 2)
+                        text("Room " + str(Room.currentRoom.adjRooms[EAST].roomId), door.boundingBox[WEST] - 20, (door.boundingBox[SOUTH] + door.boundingBox[NORTH]) / 2)
                     elif door.direction == SOUTH and Room.currentRoom.adjRooms[SOUTH] != None:
-                        text("Room " + str(Room.currentRoom.adjRooms[SOUTH].roomId) + " lvl " + str(door.level), (door.boundingBox[EAST] + door.boundingBox[WEST])/2, door.boundingBox[NORTH] - 20)
+                        text("Room " + str(Room.currentRoom.adjRooms[SOUTH].roomId), (door.boundingBox[EAST] + door.boundingBox[WEST])/2, door.boundingBox[NORTH] - 20)
                                      
             textAlign(CORNER)
         
