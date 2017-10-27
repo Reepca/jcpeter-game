@@ -6,6 +6,7 @@ from inventory import Inventory
 from dungeon import Dungeon
 from game import Game
 from util import x, y, NO_DIR, WEST, EAST, NORTH, SOUTH, directionSigns, boundBoxCheck, opposite, inZone
+import miniMap
 import __main__
 
 
@@ -60,6 +61,7 @@ class Character(Sprite):
         self.moving = False
         self.inventory = Inventory()
         self.openInventory = False
+        self.openMiniMap = False
         
         # Adjust hitbox to fit animation size
         left, top, right, bottom = self.boundingBox
@@ -88,6 +90,10 @@ class Character(Sprite):
 
     def toggleInventory(self):
         self.openInventory = not self.openInventory
+
+
+    def toggleMiniMap(self):
+        self.openMiniMap = not self.openMiniMap
 
 
     def attackBox(self):
@@ -138,6 +144,7 @@ class Character(Sprite):
                     if roomPastDoor != None and (roomPastDoor.rightKey is None or self.inventory.contains(roomPastDoor.rightKey) or roomPastDoor.roomId < 0):
                         door.toggleOpen()
                         Room.currentRoom.adjRooms[door.direction].enter(opposite(door.direction))
+                        miniMap.updateMiniMap()
                         
                         # current win condition is entering the last room
                         if Room.currentRoom.type == Room.END:
@@ -195,6 +202,9 @@ class Character(Sprite):
         if self.openInventory:
             self.inventory.draw((width/2 - Inventory.inventoryImage.width/2,
                                  height/2 - Inventory.inventoryImage.height/2))
+            
+        if self.openMiniMap:
+            __main__.ourGame.currentDungeon.miniMap.draw()
 
 
     def updatePosition(self, timePassed):

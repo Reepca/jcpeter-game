@@ -96,8 +96,12 @@ class Room(Sprite):
                                    self,
                                    location=(width/2,
                                              height/2)) 
+        self.visited = False
+        self.discovered = False
         if currentRoom:
             Room.currentRoom = self
+            Room.currentRoom.discovered = True
+            Room.currentRoom.visited = True
         self.wallBounds = [0, 0, 0, 0]
         self.gridCoord = gridCoord
         self.adjRooms = [None, None, None, None]
@@ -105,11 +109,13 @@ class Room(Sprite):
         self.enterDirection = enterDirection
         self.rightKey = None
         self.roomId = -1
-
+        
+    
 
     def enter(self, enterDirection):
         # enter a room from a direction 
         self.enterDirection = enterDirection
+        self.visited = True
         Room.currentRoom = self
         print "adjRooms: ", self.adjRooms
         if enterDirection != NO_DIR and self.doors[enterDirection] != None:

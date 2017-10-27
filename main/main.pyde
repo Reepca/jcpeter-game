@@ -11,6 +11,7 @@ import room
 import dungeon
 import jkey
 import inventory
+import miniMap
 from game import Game
 from util import NO_DIR, NORTH, WEST, EAST, SOUTH, CLOSED, AJAR
 
@@ -29,7 +30,7 @@ def setup():
     # Ugly hack
     initializeImages()
     global player, ourGame
-    ourGame = Game(startSize=2, sizeScale=1, levelCount=4)
+    ourGame = Game(startSize=6, sizeScale=3, levelCount=4)
     
     #currentLevel = dungeon.Dungeon(10)
     player = character.Character()
@@ -66,6 +67,9 @@ def keyPressed():
             
         if key == 'e' or key == 'E':
             player.toggleInventory()
+            
+        if key == 'm' or key == 'M':
+            player.toggleMiniMap()
         
         # WASD controls
         if key == 'w' or key == 'W':
@@ -113,6 +117,8 @@ def initializeImages():
     room.initRoom()
     jkey.initKey()
     inventory.initInventory()
+    miniMap.initMiniMap()
+    
     
 def main():
     # The actual entry point to the program isn't really clear, so here we'll

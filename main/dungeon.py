@@ -1,6 +1,7 @@
 from util import NO_DIR, WEST, EAST, SOUTH, NORTH, x, y, AJAR, CLOSED, opposite
 from room import Room, Door
 from jkey import Key
+import miniMap
 import random as r
 
 class Dungeon(object):
@@ -14,11 +15,10 @@ class Dungeon(object):
         self.rooms = []
         
         self.generateDungeon(roomCount)
+        self.miniMap = miniMap.MiniMap(self.rooms)
         
         print Room.currentRoom.adjRooms
-        for room in Room.currentRoom.adjRooms:
-            if room:
-                print room.roomId
+        miniMap.updateMiniMap()
         
             
     def generateDungeon(self, roomCount):
@@ -36,8 +36,9 @@ class Dungeon(object):
             # random direction (0-3)
             roomDir = r.randint(WEST, SOUTH)
             self.addRoom(self.rooms[chosenRoom], roomType, roomDir)
-                
-                
+        
+        
+             
     
             
     def addRoom(self, adjRoom, type, direction=NO_DIR):
@@ -114,4 +115,7 @@ class Dungeon(object):
                 elif room.gridCoord[x] == linkRoom.gridCoord[x] + 1:
                     room.adjRooms[WEST] = linkRoom
                     linkRoom.adjRooms[EAST] = room
+                    
+
+ 
                     
