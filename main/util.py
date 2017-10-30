@@ -50,3 +50,14 @@ def opposite(direction):
     oppositeDir = SOUTH if direction == NORTH else oppositeDir
     oppositeDir = WEST if direction == EAST else oppositeDir
     return oppositeDir
+
+def median(lst):
+    mid, remainder = divmod(len(lst), 2)
+    print(lst)
+    print ("median",mid, remainder)
+    if remainder == 0:
+        return float(lst[mid-1] + lst[mid]) / 2
+    else:
+        return float(lst[mid])
+    
+    

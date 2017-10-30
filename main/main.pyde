@@ -30,7 +30,7 @@ def setup():
     # Ugly hack
     initializeImages()
     global player, ourGame
-    ourGame = Game(startSize=6, sizeScale=3, levelCount=4)
+    ourGame = Game(startSize=30, sizeScale=3, levelCount=4)
     
     #currentLevel = dungeon.Dungeon(10)
     player = character.Character()
