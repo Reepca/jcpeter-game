@@ -44,17 +44,26 @@ class MiniMap(object):
         centerPos = [drawCoord[x] + MiniMap.mapImage.width/2 - self.shift[x],
                      drawCoord[y] + MiniMap.mapImage.height/2 - self.shift[y]]
         rectMode(CENTER)
+        textAlign(CENTER)
         for room in self.rooms:
+            rectColor = color(0)
+            fontColor = color(0)
             if room.discovered:
-                fill(0, 255, 0)
+                rectColor = color(0, 255, 0)
+                fontColor = color(0)
             if room.visited:
-                fill(0, 0, 255)
+                rectColor = color(0, 0, 255)
+                fontColor = color(255)
             if Room.currentRoom == room:
-                fill(255, 255, 0)
+                rectColor = color(255, 255, 0)
+                fontColor = color(0)
             xPos = centerPos[x] + room.gridCoord[x] * (self.roomSize + self.spaceSize)
             yPos = centerPos[y] + room.gridCoord[y] * (self.roomSize + self.spaceSize)
             if room.discovered:
+                fill(rectColor)
                 rect(xPos, yPos, self.roomSize, self.roomSize)
+                fill(fontColor)
+                text(str(room.roomId), xPos,yPos)
         fill(0)
         rectMode(CORNER)
         
