@@ -141,9 +141,10 @@ class Character(Sprite):
                 if(boundBoxCheck(self.boundingBox, door.boundingBox)):
                     # if a room exists past the door you're trying to enter
                     roomPastDoor = Room.currentRoom.adjRooms[door.direction]
-                    if roomPastDoor != None and (roomPastDoor.rightKey is None or self.inventory.contains(roomPastDoor.rightKey) or roomPastDoor.roomId < 0):
+                    if roomPastDoor != None and (roomPastDoor.rightKey is None or self.inventory.contains(roomPastDoor.rightKey) or roomPastDoor.roomId < 0 or not roomPastDoor.locked):
                         door.toggleOpen()
                         Room.currentRoom.adjRooms[door.direction].enter(opposite(door.direction))
+                        self.inventory.drop(roomPastDoor.rightKey)
                         miniMap.updateMiniMap()
                         
                         # current win condition is entering the last room

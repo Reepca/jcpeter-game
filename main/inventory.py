@@ -37,6 +37,10 @@ class Inventory(jArray):
         return successStatus
         
         
+    def drop(self, thing):
+        self.firstEmpty = self.data.index(thing)
+        self.data[self.firstEmpty] = None
+        
     
     def contains(self, thing):
         print "Inventory has", thing.name, ":", True if self.data.count(thing) > 0 else False

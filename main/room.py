@@ -109,6 +109,7 @@ class Room(Sprite):
         self.enterDirection = enterDirection
         self.rightKey = None
         self.roomId = -1
+        self.locked = True
         
     
 
@@ -116,6 +117,7 @@ class Room(Sprite):
         # enter a room from a direction 
         self.enterDirection = enterDirection
         self.visited = True
+        self.locked = False
         Room.currentRoom = self
         print "adjRooms: ", self.adjRooms
         if enterDirection != NO_DIR and self.doors[enterDirection] != None:
@@ -161,7 +163,7 @@ class Room(Sprite):
                              door.boundingBox[WEST] - 20, 
                              (door.boundingBox[SOUTH] + door.boundingBox[NORTH]) / 2)
                     elif door.direction == SOUTH and Room.currentRoom.adjRooms[SOUTH] != None:
-                        text("Room " + str(Room.currentRoom.adjRooms[SOUTH].roomId) if Room.currentRoom.adjRooms[WEST].roomId != -1 else "Start", 
+                        text("Room " + str(Room.currentRoom.adjRooms[SOUTH].roomId) if Room.currentRoom.adjRooms[SOUTH].roomId != -1 else "Start", 
                              (door.boundingBox[EAST] + door.boundingBox[WEST])/2, 
                              door.boundingBox[NORTH] - 20)
                                      
