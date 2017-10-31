@@ -38,8 +38,12 @@ class Inventory(jArray):
         
         
     def drop(self, thing):
-        self.firstEmpty = self.data.index(thing)
+        try:
+            self.firstEmpty = self.data.index(thing)
+        except ValueError:
+            print(thing, "not in inventory! Cannot drop!")
         self.data[self.firstEmpty] = None
+        
         
     
     def contains(self, thing):

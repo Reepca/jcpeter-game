@@ -144,7 +144,8 @@ class Character(Sprite):
                     if roomPastDoor != None and (roomPastDoor.rightKey is None or self.inventory.contains(roomPastDoor.rightKey) or roomPastDoor.roomId < 0 or not roomPastDoor.locked):
                         door.toggleOpen()
                         Room.currentRoom.adjRooms[door.direction].enter(opposite(door.direction))
-                        self.inventory.drop(roomPastDoor.rightKey)
+                        if roomPastDoor.rightKey is None or self.inventory.contains(roomPastDoor.rightKey):
+                            self.inventory.drop(roomPastDoor.rightKey)
                         miniMap.updateMiniMap()
                         
                         # current win condition is entering the last room
@@ -201,11 +202,23 @@ class Character(Sprite):
             left, top, right, bottom = self.attackBox()
             
         if self.openInventory:
-            self.inventory.draw((width/2 - Inventory.inventoryImage.width/2,
-                                 height/2 - Inventory.inventoryImage.height/2))
+            if __main__.key_states.get('m') or __main__.key_states.get('M'):
+                __main__.ourGame.currentDungeon.miniMap.draw()
+                self.openMiniMap = True
+                self.openInventory = False
+            else:
+                self.inventory.draw((width/2 - Inventory.inventoryImage.width/2,
+                                     height/2 - Inventory.inventoryImage.height/2))
+            
             
         if self.openMiniMap:
-            __main__.ourGame.currentDungeon.miniMap.draw()
+            if __main__.key_states.get('e') or __main__.key_states.get('E'):
+                self.inventory.draw((width/2 - Inventory.inventoryImage.width/2,
+                                     height/2 - Inventory.inventoryImage.height/2))
+                self.openInventory = True
+                self.openMiniMap = False
+            else:
+                __main__.ourGame.currentDungeon.miniMap.draw()
 
 
     def updatePosition(self, timePassed):
