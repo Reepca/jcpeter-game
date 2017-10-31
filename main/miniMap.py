@@ -4,6 +4,8 @@ from util import x, y, WEST, NORTH, EAST, SOUTH, median
 class MiniMap(object):
     
     mapImage = None
+    discoveredRoom = None
+    currentRoomMarker = None
     mapBorder = [0, 0]
     spaceRatio = 8
     
@@ -35,7 +37,6 @@ class MiniMap(object):
         
         self.shift = [median(self.xGridCoords) * (self.roomSize + self.spaceSize), 
                  median(self.yGridCoords) * (self.roomSize + self.spaceSize)]
-        print(median(self.xGridCoords), median(self.yGridCoords))
         
         
     def draw(self, drawCoord=(125, 125)):
@@ -43,30 +44,36 @@ class MiniMap(object):
         
         centerPos = [drawCoord[x] + MiniMap.mapImage.width/2 - self.shift[x],
                      drawCoord[y] + MiniMap.mapImage.height/2 - self.shift[y]]
-        rectMode(CENTER)
         textAlign(CENTER)
+        imageMode(CENTER)
         for room in self.rooms:
-            rectColor = color(0)
-            fontColor = color(0)
-            if room.discovered:
-                rectColor = color(0, 255, 0)
-                fontColor = color(0)
-            if room.visited:
-                rectColor = color(0, 0, 255)
-                fontColor = color(255)
-            if Room.currentRoom == room:
-                rectColor = color(255, 255, 0)
-                fontColor = color(0)
+
             xPos = centerPos[x] + room.gridCoord[x] * (self.roomSize + self.spaceSize)
             yPos = centerPos[y] + room.gridCoord[y] * (self.roomSize + self.spaceSize)
             if room.discovered:
-                fill(rectColor)
-                rect(xPos, yPos, self.roomSize, self.roomSize)
-                fill(fontColor)
-                text(str(room.roomId), xPos,yPos)
-            fill(50)
-            rectMode(CORNER)
+                image(MiniMap.discoveredRoom, xPos, yPos, self.roomSize, self.roomSize)
+                
+            
             if room.visited:
+                drawImg = None
+                if room.type == Room.START:
+                    drawImg = Room.startRoom
+                elif room.type == Room.PUZZLE:
+                    drawImg = Room.puzzleRoom
+                elif room.type == Room.BATTLE:
+                    drawImg = Room.battleRoom
+                elif room.type == Room.EMPTY:
+                    drawImg = Room.startRoom
+                elif room.type == Room.END:
+                    drawImg = Room.endRoom
+                else:
+                    drawImg = Room.startRoom
+                
+                
+                image(drawImg, xPos, yPos, self.roomSize, self.roomSize)
+                
+                
+                fill(50)
                 for direction in range(WEST, SOUTH+1):
                     if room.doors[direction] != None:
                         if direction == WEST:
@@ -89,8 +96,14 @@ class MiniMap(object):
                                 yPos + self.roomSize/2,
                                 self.spaceSize,
                                 self.spaceSize)
-            rectMode(CENTER)
-                    
+            if Room.currentRoom == room:
+                image(MiniMap.currentRoomMarker, xPos, yPos, self.roomSize, self.roomSize)
+                
+            if room.discovered:
+                fill(0)
+                text(str(room.roomId) if room.roomId != -1 else "Start", xPos,yPos)
+        imageMode(CORNER)
+        textAlign(CORNER)
         fill(0)
         
         
@@ -103,5 +116,7 @@ def updateMiniMap():
         
 def initMiniMap():
     MiniMap.mapImage = loadImage("miniMap.png")
+    MiniMap.discoveredRoom = loadImage("discoveredRoom.png")
+    MiniMap.currentRoomMarker = loadImage("currentRoomMarker.png")
     MiniMap.mapBorder = [30, 30]
     
