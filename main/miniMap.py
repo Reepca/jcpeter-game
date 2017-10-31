@@ -64,8 +64,35 @@ class MiniMap(object):
                 rect(xPos, yPos, self.roomSize, self.roomSize)
                 fill(fontColor)
                 text(str(room.roomId), xPos,yPos)
+            fill(50)
+            rectMode(CORNER)
+            if room.visited:
+                for direction in range(WEST, SOUTH+1):
+                    if room.doors[direction] != None:
+                        if direction == WEST:
+                            rect(xPos - self.roomSize/2 - self.spaceSize,
+                                yPos - self.spaceSize,
+                                self.spaceSize,
+                                self.spaceSize)
+                        elif direction == NORTH:
+                            rect(xPos - self.spaceSize,
+                                yPos - self.roomSize/2 - self.spaceSize,
+                                self.spaceSize,
+                                self.spaceSize)
+                        elif direction == EAST:
+                            rect(xPos + self.roomSize/2,
+                                yPos - self.spaceSize,
+                                self.spaceSize,
+                                self.spaceSize)
+                        elif direction == SOUTH:
+                            rect(xPos - self.spaceSize,
+                                yPos + self.roomSize/2,
+                                self.spaceSize,
+                                self.spaceSize)
+            rectMode(CENTER)
+                    
         fill(0)
-        rectMode(CORNER)
+        
         
         
 def updateMiniMap():
