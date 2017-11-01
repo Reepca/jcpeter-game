@@ -6,7 +6,7 @@ import __main__
 
 class Game(object):
     victoryCount = 0
-    gameInfo = [None, None, None]
+    gameInfo = [None, None, None, None]
     def __init__(self, startSize=10, sizeScale=5, levelCount=4):
         self.startSize = startSize
         self.sizeScale = sizeScale
@@ -31,7 +31,7 @@ class Game(object):
         Key.keyCount = 0
         Dungeon.floorKeys = []
         Room.currentRoom = None
-        Game.gameInfo = [None, None, None]
+        Game.gameInfo = [None, None, None, None]
         
         
         

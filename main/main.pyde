@@ -17,6 +17,7 @@ from util import NO_DIR, NORTH, WEST, EAST, SOUTH, CLOSED, AJAR
 
 # Ugly globals
 key_states = dict()
+startTime = millis()
 timeOfLastUpdate = millis()
 ourGame = None
 player = None
@@ -104,7 +105,7 @@ def update(timePassed):
     """timePassed is the amount of time passed since last update (in
     milliseconds)"""
     character.updatePositions(timePassed)
-    
+    updateGameInfo()
     global levelsPassed, player
     if Game.victoryCount != levelsPassed:
         ourGame.nextLevel()
@@ -121,21 +122,19 @@ def initializeImages():
     
     
 def updateGameInfo():
-    # gameInfo has tuples with strings and fontSize to be displayed
+    # Game.gameInfo has tuples with strings and fontSize to be displayed
     # in the top left corner
-    print("Updating Game Info")
     roomsCompleted = 0
     for room in ourGame.currentDungeon.rooms:
         if room.visited:
             roomsCompleted += 1
-    print(roomsCompleted, "completed", (ourGame.startSize + ourGame.sizeScale * Game.victoryCount), "rooms")
     Game.gameInfo[0] = ("Tutorial Dungeon: " + str(ourGame.levelCount) + " levels", 30)
     Game.gameInfo[1] = ("Level: " + str(Game.victoryCount), 20)
     Game.gameInfo[2] = (str(int(float(100*roomsCompleted)/float(ourGame.startSize + ourGame.sizeScale * Game.victoryCount))) + " % completed", 20)
+    Game.gameInfo[3] = ("Time: " + nf(float(millis()-startTime)/1000.0, 0, 1)+"s", 20)
     
     
 def displayGameInfo(x, y):
-    textHeight = textAscent() + textDescent()
     fill(255)
     offset = 0
     textAlign(LEFT, TOP)
