@@ -56,6 +56,7 @@ class Inventory(jArray):
         
         
     def draw(self, drawCoord=(0,0)):
+        tint(255, 128)
         image(Inventory.inventoryImage, drawCoord[x], drawCoord[y])
         textSize(Inventory.textHeight)
         imageMode(CENTER)
@@ -68,6 +69,7 @@ class Inventory(jArray):
             # put inventory slot number to left of slot
             text(str(i), drawCoord[x] + self.inventoryMap[i][x] - Inventory.betweenSlots[x]/2, drawCoord[y] + self.inventoryMap[i][y] + Inventory.slotSize/2)
         imageMode(CORNER)
+        noTint()
         
             
 

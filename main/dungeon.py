@@ -13,11 +13,10 @@ class Dungeon(object):
 
         # list of all rooms in dungeon.. maybe restructure this later
         self.rooms = []
+        self.visitedRoomCount = 1
         
         self.generateDungeon(roomCount)
         self.miniMap = miniMap.MiniMap(self.rooms)
-        
-        print Room.currentRoom.adjRooms
         miniMap.updateMiniMap()
         
             
@@ -85,8 +84,6 @@ class Dungeon(object):
                             Room.currentRoom.boundingBox[3] - Key.keyImg.width/2)
             newKey = Key(xPos, yPos, self.rooms[room])
             newRoom.rightKey = newKey
-            
-            print "Made room ", newRoom.roomId
             Dungeon.floorKeys.append(newKey)
             self.rooms.append(newRoom)
             self.linkRooms(newRoom)

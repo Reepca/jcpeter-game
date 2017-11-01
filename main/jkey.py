@@ -20,7 +20,6 @@ class Key(Sprite, Pickupable):
         factor = inventory.getSlotSizeScale(Key.keyImg)
         self.inventoryImage = Key.keyImg.copy()
         self.inventoryImage.resize(int(Key.keyImg.width * factor), int(Key.keyImg.height * factor))
-        print "Key ", self.id, " in room ", roomWithKey.roomId
         self.name = "Key " + str(self.id)
         Key.keyCount += 1
         

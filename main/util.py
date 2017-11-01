@@ -53,8 +53,6 @@ def opposite(direction):
 
 def median(lst):
     mid, remainder = divmod(len(lst), 2)
-    print(lst)
-    print ("median",mid, remainder)
     if remainder == 0:
         return float(lst[mid-1] + lst[mid]) / 2
     else:

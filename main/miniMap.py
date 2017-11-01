@@ -40,6 +40,7 @@ class MiniMap(object):
         
         
     def draw(self, drawCoord=(125, 125)):
+        tint(255, 128)
         image(MiniMap.mapImage, drawCoord[x], drawCoord[y])
         
         centerPos = [drawCoord[x] + MiniMap.mapImage.width/2 - self.shift[x],
@@ -50,7 +51,7 @@ class MiniMap(object):
 
             xPos = centerPos[x] + room.gridCoord[x] * (self.roomSize + self.spaceSize)
             yPos = centerPos[y] + room.gridCoord[y] * (self.roomSize + self.spaceSize)
-            if room.discovered:
+            if room.discovered and not room.visited:
                 image(MiniMap.discoveredRoom, xPos, yPos, self.roomSize, self.roomSize)
                 
             
@@ -104,6 +105,7 @@ class MiniMap(object):
                 text(str(room.roomId) if room.roomId != -1 else "Start", xPos,yPos)
         imageMode(CORNER)
         textAlign(CORNER)
+        noTint()
         fill(0)
         
         

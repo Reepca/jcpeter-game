@@ -2,9 +2,11 @@ from dungeon import Dungeon
 from jkey import Key
 from room import Room, Door
 from sprite import Sprite
+import __main__
 
 class Game(object):
     victoryCount = 0
+    gameInfo = [None, None, None]
     def __init__(self, startSize=10, sizeScale=5, levelCount=4):
         self.startSize = startSize
         self.sizeScale = sizeScale
@@ -20,7 +22,7 @@ class Game(object):
             self.clearClassVars()
             Door.level = Game.victoryCount
             self.currentDungeon = Dungeon(self.startSize + self.sizeScale * Game.victoryCount)
-            print 'Current Level: ', Game.victoryCount
+            __main__.updateGameInfo()
             
             
     def clearClassVars(self):
@@ -29,3 +31,9 @@ class Game(object):
         Key.keyCount = 0
         Dungeon.floorKeys = []
         Room.currentRoom = None
+        Game.gameInfo = [None, None, None]
+        
+        
+        
+        
+        

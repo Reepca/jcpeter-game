@@ -116,8 +116,9 @@ class Room(Sprite):
     def enter(self, enterDirection):
         # enter a room from a direction 
         self.enterDirection = enterDirection
-        self.visited = True
-        self.locked = False
+        if not self.visited:
+            self.visited = True
+            self.locked = False
         Room.currentRoom = self
         print "adjRooms: ", self.adjRooms
         if enterDirection != NO_DIR and self.doors[enterDirection] != None:

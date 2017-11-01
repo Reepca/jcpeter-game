@@ -144,6 +144,7 @@ class Character(Sprite):
                     if roomPastDoor != None and (roomPastDoor.rightKey is None or self.inventory.contains(roomPastDoor.rightKey) or roomPastDoor.roomId < 0 or not roomPastDoor.locked):
                         door.toggleOpen()
                         Room.currentRoom.adjRooms[door.direction].enter(opposite(door.direction))
+                        __main__.updateGameInfo()
                         if roomPastDoor.rightKey is None or self.inventory.contains(roomPastDoor.rightKey):
                             self.inventory.drop(roomPastDoor.rightKey)
                         miniMap.updateMiniMap()

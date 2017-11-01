@@ -30,9 +30,8 @@ def setup():
     # Ugly hack
     initializeImages()
     global player, ourGame
-    ourGame = Game(startSize=10, sizeScale=3, levelCount=4)
-    
-    #currentLevel = dungeon.Dungeon(10)
+    ourGame = Game(startSize=3, sizeScale=3, levelCount=4)
+    updateGameInfo()
     player = character.Character()
     
 
@@ -43,7 +42,7 @@ def draw():
     update(millis() - timeOfLastUpdate)
     timeOfLastUpdate = millis()
     sprite.drawAllSprites()
-
+    displayGameInfo(0, 0)
 
 def keyPressed():
     global key_states
@@ -119,6 +118,33 @@ def initializeImages():
     jkey.initKey()
     inventory.initInventory()
     miniMap.initMiniMap()
+    
+    
+def updateGameInfo():
+    # gameInfo has tuples with strings and fontSize to be displayed
+    # in the top left corner
+    print("Updating Game Info")
+    roomsCompleted = 0
+    for room in ourGame.currentDungeon.rooms:
+        if room.visited:
+            roomsCompleted += 1
+    print(roomsCompleted, "completed", (ourGame.startSize + ourGame.sizeScale * Game.victoryCount), "rooms")
+    Game.gameInfo[0] = ("Tutorial Dungeon: " + str(ourGame.levelCount) + " levels", 30)
+    Game.gameInfo[1] = ("Level: " + str(Game.victoryCount), 20)
+    Game.gameInfo[2] = (str(int(float(100*roomsCompleted)/float(ourGame.startSize + ourGame.sizeScale * Game.victoryCount))) + " % completed", 20)
+    
+    
+def displayGameInfo(x, y):
+    textHeight = textAscent() + textDescent()
+    fill(255)
+    offset = 0
+    textAlign(LEFT, TOP)
+    for gameInfo in Game.gameInfo:
+        textSize(gameInfo[1])
+        text(gameInfo[0], x, y+offset)
+        offset += gameInfo[1]
+    fill(0)
+    textSize(14)
     
     
 def main():
