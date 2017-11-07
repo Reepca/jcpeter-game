@@ -2,6 +2,7 @@ from util import NO_DIR, WEST, EAST, SOUTH, NORTH, x, y, AJAR, CLOSED, opposite
 from room import Room, Door
 from jkey import Key
 import miniMap
+from skeleton import Skeleton
 import random as r
 
 class Dungeon(object):
@@ -35,10 +36,9 @@ class Dungeon(object):
             # random direction (0-3)
             roomDir = r.randint(WEST, SOUTH)
             self.addRoom(self.rooms[chosenRoom], roomType, roomDir)
+            if roomType == Room.BATTLE:
+                self.rooms[len(self.rooms)-1].spritesInRoom.append(Skeleton(initPos=(600, 600)))
         
-        
-             
-    
             
     def addRoom(self, adjRoom, type, direction=NO_DIR):
         # print "Add Room Called"
@@ -78,10 +78,10 @@ class Dungeon(object):
             
             newRoom.roomId = len(Dungeon.floorKeys)
             room = r.randint(0, len(self.rooms) - 1)
-            xPos = r.randint(Room.currentRoom.boundingBox[0] + Key.keyImg.width/2,
-                            Room.currentRoom.boundingBox[2] - Key.keyImg.width/2)
-            yPos = r.randint(Room.currentRoom.boundingBox[1] + Key.keyImg.width/2,
-                            Room.currentRoom.boundingBox[3] - Key.keyImg.width/2)
+            xPos = r.randint(Room.currentRoom.boundingBox[WEST] + Key.keyImg.width/2,
+                            Room.currentRoom.boundingBox[EAST] - Key.keyImg.width/2)
+            yPos = r.randint(Room.currentRoom.boundingBox[NORTH] + Key.keyImg.width/2,
+                            Room.currentRoom.boundingBox[SOUTH] - Key.keyImg.width/2)
             newKey = Key(xPos, yPos, self.rooms[room])
             newRoom.rightKey = newKey
             Dungeon.floorKeys.append(newKey)

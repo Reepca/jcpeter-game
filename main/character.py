@@ -5,7 +5,7 @@ from animation import Animation
 from inventory import Inventory
 from dungeon import Dungeon
 from game import Game
-from util import x, y, NO_DIR, WEST, EAST, NORTH, SOUTH, directionSigns, boundBoxCheck, opposite, inZone
+from util import x, y, NO_DIR, WEST, EAST, NORTH, SOUTH, directionSigns, boundBoxCheck, opposite, inZone, IDLE, WALKING, ATTACKING, JUMPING
 import miniMap
 import __main__
 
@@ -37,10 +37,6 @@ class Character(CombatSprite):
     # north/south.
     attackSize = 200, 100
     
-    IDLE = 0
-    WALKING = 1
-    ATTACKING = 2
-    JUMPING = 3
 
     def __init__(self, initPos=(400, 400)):
         
@@ -82,12 +78,13 @@ class Character(CombatSprite):
                                        Character.playerJumpNumFrames,
                                        10)
         self.animations = [self.playerAni, self.playerWalkAni, self.playerAttackAni, self.playerJumpAni]
-        self.currentAnimation = self.animations[Character.IDLE]
+        self.currentAnimation = self.animations[IDLE]
         Room.currentRoom.spritesInRoom.append(self)
         
         
     def teleportTo(self, location):
         self.location = location
+
 
     def toggleInventory(self):
         self.openInventory = not self.openInventory
@@ -95,12 +92,8 @@ class Character(CombatSprite):
 
     def toggleMiniMap(self):
         self.openMiniMap = not self.openMiniMap
-
-
-    
-
         
-
+        
     def isAttacking(self):
         return __main__.key_states.get(' ')
 
@@ -153,9 +146,9 @@ class Character(CombatSprite):
             self.currentAnimation.flipXDisplay(x - Character.sizeX, y - Character.sizeY)
         
         if not self.moving:
-            self.currentAnimation = self.animations[Character.IDLE]
+            self.currentAnimation = self.animations[IDLE]
         else:
-                self.currentAnimation = self.animations[Character.WALKING]
+            self.currentAnimation = self.animations[WALKING]
 
         # Drawing the attack box just to give us an idea of what it's like
         if self.isAttacking():

@@ -11,6 +11,12 @@ NORTH = 1
 EAST = 2
 SOUTH = 3
 
+# more Enums
+IDLE = 0
+WALKING = 1
+ATTACKING = 2
+JUMPING = 3
+
 
 AJAR = True
 CLOSED = False
