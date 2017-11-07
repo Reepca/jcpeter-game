@@ -6,6 +6,8 @@ The only built in functions will be in here (like draw, setup, keyPressed, etc).
 
 # Imports
 import sprite
+from sprite import Sprite
+import combatSprite
 import character
 import room
 import dungeon
@@ -18,10 +20,12 @@ from util import NO_DIR, NORTH, WEST, EAST, SOUTH, CLOSED, AJAR
 # Ugly globals
 key_states = dict()
 startTime = millis()
+endTime = 0
 timeOfLastUpdate = millis()
 ourGame = None
 player = None
 levelsPassed = 0
+win = False
 
 def setup():
     size(800, 800)
@@ -31,7 +35,7 @@ def setup():
     # Ugly hack
     initializeImages()
     global player, ourGame
-    ourGame = Game(startSize=3, sizeScale=3, levelCount=4)
+    ourGame = Game(startSize=3, sizeScale=3, levelCount=2)
     updateGameInfo()
     player = character.Character()
     
@@ -104,13 +108,22 @@ def keyReleased():
 def update(timePassed):
     """timePassed is the amount of time passed since last update (in
     milliseconds)"""
-    character.updatePositions(timePassed)
+    combatSprite.updatePositions(timePassed)
     updateGameInfo()
-    global levelsPassed, player
+    global levelsPassed, player, win, endTime
+    
+    # at the end of a level
     if Game.victoryCount != levelsPassed:
-        ourGame.nextLevel()
-        player = character.Character()
         levelsPassed += 1
+        ourGame.nextLevel()
+        
+        # if we've won
+        if Game.victoryCount == ourGame.levelCount:
+            endTime = float(millis()-startTime)
+            win = True
+            #player.removeSprite()
+        else:
+            player = character.Character()
 
     
 def initializeImages():
@@ -130,8 +143,8 @@ def updateGameInfo():
             roomsCompleted += 1
     Game.gameInfo[0] = ("Tutorial Dungeon: " + str(ourGame.levelCount) + " levels", 30)
     Game.gameInfo[1] = ("Level: " + str(Game.victoryCount), 20)
-    Game.gameInfo[2] = (str(int(float(100*roomsCompleted)/float(ourGame.startSize + ourGame.sizeScale * Game.victoryCount))) + " % completed", 20)
-    Game.gameInfo[3] = ("Time: " + nf(float(millis()-startTime)/1000.0, 0, 1)+"s", 20)
+    Game.gameInfo[2] = (str(int(float(100*roomsCompleted)/float(ourGame.startSize + ourGame.sizeScale * (Game.victoryCount-1 if win else Game.victoryCount )))) + " % completed", 20)
+    Game.gameInfo[3] = ("Time: " + nf((float(millis()-startTime) if not win else endTime)/1000.0, 0, 1)+"s", 20)
     
     
 def displayGameInfo(x, y):

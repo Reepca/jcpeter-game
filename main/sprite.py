@@ -68,6 +68,12 @@ class Sprite(object):
                 self.boundingBox[2] - self.boundingBox[0], 
                 self.boundingBox[3] - self.boundingBox[1])
 
+    def removeSprite(self):
+        try:
+            Sprite.allSprites.remove(self)
+        except ValueError:
+            print(self, "not in sprite list!")
+
 def drawAllSprites():
     for sprite in Sprite.allSprites:
         sprite.drawSprite()

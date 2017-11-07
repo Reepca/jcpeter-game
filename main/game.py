@@ -18,10 +18,10 @@ class Game(object):
         pass
         
     def nextLevel(self):
-        if Game.victoryCount <= self.levelCount:
+        if Game.victoryCount < self.levelCount:
             self.clearClassVars()
             Door.level = Game.victoryCount
-            self.currentDungeon = Dungeon(self.startSize + self.sizeScale * Game.victoryCount)
+            self.currentDungeon = Dungeon(self.startSize + self.sizeScale * (Game.victoryCount))
             __main__.updateGameInfo()
             
             

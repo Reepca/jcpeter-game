@@ -96,6 +96,7 @@ class Room(Sprite):
                                    self,
                                    location=(width/2,
                                              height/2)) 
+        self.spritesInRoom = []
         self.visited = False
         self.discovered = False
         if currentRoom:
@@ -110,6 +111,7 @@ class Room(Sprite):
         self.rightKey = None
         self.roomId = -1
         self.locked = True
+        
         
     
 
