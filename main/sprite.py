@@ -61,6 +61,18 @@ class Sprite(object):
         # Our left is to the left of their right
         return boundBoxCheck(self, otherSprite)
 
+    def getRect(self):
+        # this function is supposed to facilitate debugging with rect()
+        return (self.boundingBox[0], 
+                self.boundingBox[1], 
+                self.boundingBox[2] - self.boundingBox[0], 
+                self.boundingBox[3] - self.boundingBox[1])
+
+    def removeSprite(self):
+        try:
+            Sprite.allSprites.remove(self)
+        except ValueError:
+            print(self, "not in sprite list!")
 
 def drawAllSprites():
     for sprite in Sprite.allSprites:

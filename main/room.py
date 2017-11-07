@@ -16,11 +16,14 @@ class Door(Sprite):
     southDoorClosed = None
     doorZones = []
 
+    level = 0
+
     def __init__(self, direction, initState=CLOSED):
         super(Door, self).__init__(Door.doorZones[direction], self,
                                    manageInSprite=False)
         self.state = initState
         self.direction = direction
+        self.level = Door.level
 
     def draw(self, x, y):
         if self.direction == WEST:
@@ -76,37 +79,51 @@ class Room(Sprite):
     # Room images
     startRoom = None
     puzzleRoom = None
+    battleRoom = None
     endRoom = None
 
     def __init__(self, enterDirection=NO_DIR, type=START, doors=None, gridCoord=[None, None], currentRoom=False):
         """ """
-        print "Room made"
-        if doors:
+        # DON'T GET RID OF THIS, IDIOT butt
+        if doors != None:
             self.doors = doors
         else:
-            self.doors = [Door(WEST), Door(NORTH), Door(EAST), Door(SOUTH)]
-               
-        
+            self.doors = [None, None, None, None]
+            
         super(Room, self).__init__((Room.wallDepth,
                                     Room.wallDepth, width - Room.wallDepth,
                                     height - Room.wallDepth),
                                    self,
                                    location=(width/2,
                                              height/2)) 
+        self.spritesInRoom = []
+        self.visited = False
+        self.discovered = False
         if currentRoom:
             Room.currentRoom = self
+            Room.currentRoom.discovered = True
+            Room.currentRoom.visited = True
         self.wallBounds = [0, 0, 0, 0]
         self.gridCoord = gridCoord
         self.adjRooms = [None, None, None, None]
         self.type = type
         self.enterDirection = enterDirection
+        self.rightKey = None
+        self.roomId = -1
+        self.locked = True
+        
+        
+    
 
     def enter(self, enterDirection):
         # enter a room from a direction 
         self.enterDirection = enterDirection
+        if not self.visited:
+            self.visited = True
+            self.locked = False
         Room.currentRoom = self
         print "adjRooms: ", self.adjRooms
-        if enterDirection != NO_DIR:
+        if enterDirection != NO_DIR and self.doors[enterDirection] != None:
             self.doors[enterDirection].state = AJAR
             if self.adjRooms[enterDirection] != None:
                 self.adjRooms[enterDirection].doors[opposite(enterDirection)].state = AJAR
@@ -121,17 +138,47 @@ class Room(Sprite):
                 drawImg = Room.startRoom
             elif Room.currentRoom.type == Room.PUZZLE:
                 drawImg = Room.puzzleRoom
+            elif Room.currentRoom.type == Room.BATTLE:
+                drawImg = Room.battleRoom
+            elif Room.currentRoom.type == Room.EMPTY:
+                drawImg = Room.startRoom
             elif Room.currentRoom.type == Room.END:
                 drawImg = Room.endRoom
             image(drawImg, 0, 0)
-    
+            textAlign(CENTER)
+            text("Room " + str(self.roomId) if self.roomId != -1 else "Start", 
+                 (self.boundingBox[2]+self.boundingBox[0])/2, 
+                 (self.boundingBox[3]+self.boundingBox[1])/2)
+            
             for door in self.doors:
-                door.drawSprite()
+                if door:
+                    door.drawSprite()
+                    if door.direction == WEST and Room.currentRoom.adjRooms[WEST] != None:
+                        text("Room " + str(Room.currentRoom.adjRooms[WEST].roomId) if Room.currentRoom.adjRooms[WEST].roomId != -1 else "Start",
+                        door.boundingBox[EAST] + 20, 
+                        (door.boundingBox[SOUTH] + door.boundingBox[NORTH]) / 2)
+                    elif door.direction == NORTH and Room.currentRoom.adjRooms[NORTH] != None:
+                        text("Room " + str(Room.currentRoom.adjRooms[NORTH].roomId) if Room.currentRoom.adjRooms[NORTH].roomId != -1 else "Start", 
+                             (door.boundingBox[EAST] + door.boundingBox[WEST]) / 2, 
+                             door.boundingBox[SOUTH] + 20)
+                    elif door.direction == EAST and Room.currentRoom.adjRooms[EAST] != None:
+                        text("Room " + str(Room.currentRoom.adjRooms[EAST].roomId) if Room.currentRoom.adjRooms[EAST].roomId != -1 else "Start", 
+                             door.boundingBox[WEST] - 20, 
+                             (door.boundingBox[SOUTH] + door.boundingBox[NORTH]) / 2)
+                    elif door.direction == SOUTH and Room.currentRoom.adjRooms[SOUTH] != None:
+                        text("Room " + str(Room.currentRoom.adjRooms[SOUTH].roomId) if Room.currentRoom.adjRooms[SOUTH].roomId != -1 else "Start", 
+                             (door.boundingBox[EAST] + door.boundingBox[WEST])/2, 
+                             door.boundingBox[NORTH] - 20)
+                                     
+            textAlign(CORNER)
+        
+    
 
     def updateDoor(self, direction, state):
         """ """
         print "Door direction updated:: ", direction
         self.doors[direction].state = state
+
 
     def toggleDoor(self, direction):
         print "Door direction toggled:: ", direction
@@ -139,10 +186,11 @@ class Room(Sprite):
 
 
     def setWallBounds(self):
-        self.wallBounds[WEST] = Door.eastDoorOpen.width
+        self.wallBounds[WEST] = Door.westDoorOpen.width
         self.wallBounds[NORTH] = Door.southDoorOpen.height
-        self.wallBounds[EAST] = Door.westDoorOpen.width
+        self.wallBounds[EAST] = Door.eastDoorOpen.width
         self.wallBounds[SOUTH] = Door.southDoorOpen.height
+        
 
 def initDoor():
     Door.northDoorOpen = loadImage("northDoorOpen.png")
@@ -180,5 +228,5 @@ def initRoom():
         time."""
         Room.startRoom = loadImage("startRoom.png")
         Room.puzzleRoom = loadImage("puzzleRoom.png")
+        Room.battleRoom = loadImage("battleRoom.png")
         Room.endRoom = loadImage("endRoom.png")
-        initDoor()
